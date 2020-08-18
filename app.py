@@ -4,7 +4,7 @@ import numpy as np
 import streamlit as st
 
 st.markdown('## Human activity predictor from smartphones')
-model = load('models/decision_tree.joblib')  # get the model
+model = load('models/activity_classifier.joblib')
 
 feature_a = st.number_input('tBodyAccMag-mean()')
 feature_b = st.number_input('angle(X,gravityMean)')
