@@ -3,7 +3,7 @@ import numpy as np
 
 import streamlit as st
 
-st.markdown('## Human activity predictor from smartphones')
+st.markdown('## Human activity predictor from smartphones!')
 model = load('models/activity_classifier.joblib')
 
 feature_a = st.number_input('tBodyAccMag-mean()')
