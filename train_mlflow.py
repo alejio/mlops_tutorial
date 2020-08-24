@@ -25,6 +25,8 @@ def train():
         mlflow.log_metric("training accuracy", train_accuracy)
         dump(dt_classifier, "models/activity_classifier.joblib")
         mlflow.log_artifact("models/activity_classifier.joblib")
+        mlflow.set_tag("production_ready", 1)
+        os.remove('models/activity_classifier.joblib')
 
 
 if __name__ == "__main__":
