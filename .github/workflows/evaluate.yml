@@ -1,0 +1,16 @@
+name: ChatOps
+on: [issue_comment]
+
+jobs:
+  evaluate:
+    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/evaluate')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: machine-learning-apps/actions-chatops@master
+        with:
+          APP_PEM: ${{ secrets.APP_PEM }}
+          APP_ID: ${{ secrets.APP_ID }}
+          TRIGGER_PHRASE: "/evaluate"
+          INDICATOR_LABEL: "Evaluation Pending"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
