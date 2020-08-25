@@ -13,4 +13,4 @@ jobs:
           TRIGGER_PHRASE: "/evaluate"
           INDICATOR_LABEL: "Evaluation Pending"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
