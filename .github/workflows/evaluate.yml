@@ -57,9 +57,4 @@ jobs:
         with:
           issue-number: 1
           body: |
-            |                |ASCII                          |HTML                         |
-            |----------------|-------------------------------|-----------------------------|
-            |Single backticks|`'Isn't this fun?'`            |'Isn't this fun?'            |
-            |Quotes          |`"Isn't this fun?"`            |"Isn't this fun?"            |
-            |Dashes          |`-- is en-dash, --- is em-dash`|-- is en-dash, --- is em-dash|
-            ${{ github.ref }}
+          | \\*\\*Model\\*\\* | \\*\\*Accuracy\\*\\* |\n| ---------- | -------------- |\n| \\_Baseline\\_ | 0.973340587595 |
