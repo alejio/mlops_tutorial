@@ -29,13 +29,13 @@ def train(production_ready: bool = False):
         y_pred_train = dt_classifier.predict(X_train)
         train_accuracy = accuracy_score(y_train, y_pred_train)
         mlflow.log_metric("training accuracy", train_accuracy)
-        dump(dt_classifier, "models/activity_classifier.joblib")
-        mlflow.log_artifact("models/activity_classifier.joblib")
+        dump(dt_classifier, f"{os.getcwd()}/activity_classifier.joblib")
+        mlflow.log_artifact(f"{os.getcwd()}/activity_classifier.joblib")
         if production_ready:
             mlflow.set_tag("production_ready", 1)
         else:
             mlflow.set_tag("production_candidate", 1)
-        os.remove("models/activity_classifier.joblib")
+        os.remove(f"{os.getcwd()}/activity_classifier.joblib")
 
 
 if __name__ == "__main__":
