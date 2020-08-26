@@ -50,12 +50,12 @@ jobs:
       - run: echo "Your PR is ${PR}"
         if: success() && steps.findPr.outputs.number
         env:
-          PR: ${{ steps.findPr.outputs.pr }}
+          PR: ${{ steps.findPr.outputs.number }}
         # Let the bot respond
       - name: Create or Update Comment
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
-          issue-number: ${{ steps.findPr.outputs.pr }}
+          issue-number: ${{ steps.findPr.outputs.number }}
           body: |
             This is a multi-line test comment
             - With GitHub **Markdown** :sparkles:
