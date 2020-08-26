@@ -62,7 +62,8 @@ jobs:
         with:
           issue-number: 1
           body: |
-            | **Model** | **Accuracy** |\n| ---------- | -------------- |
-            | _Baseline_ | ${{ env.BASELINE_ACCURACY }} |
-            | _Candidate_ | ${{ env.CANDIDATE_ACCURACY }} |
+            |Model           |Accuracy                       |
+            |----------------|-------------------------------|
+            |_Baseline_      |${{ env.BASELINE_ACCURACY }}   |
+            |_Candidate_     |${{ env.CANDIDATE_ACCURACY }}  |
             
