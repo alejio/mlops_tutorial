@@ -42,20 +42,20 @@ jobs:
       #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       #   id: trainjob
         # Get the PR number for the subsequent comment action
-      - uses: actions/checkout@v2.3.2
-      - uses: jwalton/gh-find-current-pr@v1.0.2
-        id: findPr
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo "Your PR is ${PR}"
-        if: success() && steps.findPr.outputs.number
-        env:
-          PR: ${{ steps.findPr.outputs.number }}
+      # - uses: actions/checkout@v2.3.2
+      # - uses: jwalton/gh-find-current-pr@v1.0.2
+      #   id: findPr
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      # - run: echo "Your PR is ${PR}"
+      #   if: success() && steps.findPr.outputs.number
+      #   env:
+      #     PR: ${{ steps.findPr.outputs.number }}
         # Let the bot respond
       - name: Create or Update Comment
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
-          issue-number: ${{ steps.findPr.outputs.number }}
+          issue-number: 1
           body: |
             This is a multi-line test comment
             - With GitHub **Markdown** :sparkles:
