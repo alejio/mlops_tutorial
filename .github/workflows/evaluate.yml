@@ -29,5 +29,5 @@ jobs:
         run: echo "${USERNAME} made a triggering comment on PR# ${PR_NUMBER} for ${BRANCH_NAME}"
         env: 
           BRANCH_NAME: ${{ steps.prcomm.outputs.BRANCH_NAME }}
-          PR_NUMBER: ${{ steps.prcomm.outputs.PULL_REQUEST_NUMBER }
+          PR_NUMBER: ${{ steps.prcomm.outputs.PULL_REQUEST_NUMBER }}
           USERNAME: ${{ steps.prcomm.outputs.COMMENTER_USERNAME }}
