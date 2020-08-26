@@ -5,20 +5,6 @@ jobs:
   label-pr:
     runs-on: ubuntu-latest
     steps:
-      - uses: FranzDiebold/github-env-vars-action@v1.2.0
-      - name: Print environment variables
-        run: |
-          echo "GITHUB_REPOSITORY_SLUG=$GITHUB_REPOSITORY_SLUG"
-          echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
-          echo "GITHUB_REPOSITORY_OWNER=$GITHUB_REPOSITORY_OWNER"
-          echo "GITHUB_REPOSITORY_OWNER_SLUG=$GITHUB_REPOSITORY_OWNER_SLUG"
-          echo "GITHUB_REPOSITORY_NAME=$GITHUB_REPOSITORY_NAME"
-          echo "GITHUB_REPOSITORY_NAME_SLUG=$GITHUB_REPOSITORY_NAME_SLUG"
-          echo "GITHUB_REF_SLUG=$GITHUB_REF_SLUG"
-          echo "GITHUB_REF_NAME=$GITHUB_REF_NAME"
-          echo "GITHUB_REF_NAME_SLUG=$GITHUB_REF_NAME_SLUG"
-          echo "GITHUB_SHA_SHORT=$GITHUB_SHA_SHORT"
-          
       - name: ChatOps For Pull Requests
         uses: machine-learning-apps/actions-chatops@1.41
         with:
@@ -37,11 +23,17 @@ jobs:
         with:
           ref: ${{ steps.prcomm.outputs.SHA }}
 
-        # This step is a toy example that illustrates how you can use outputs from the pr-command action
-      - name: print variables
+        # Set up Python
+      - name: Set up Python v3.8.5
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
-        run: echo "${USERNAME} made a triggering comment on PR# ${PR_NUMBER} for ${BRANCH_NAME}"
-        env: 
-          BRANCH_NAME: ${{ steps.prcomm.outputs.BRANCH_NAME }}
-          PR_NUMBER: ${{ steps.prcomm.outputs.PULL_REQUEST_NUMBER }}
-          USERNAME: ${{ steps.prcomm.outputs.COMMENTER_USERNAME }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.5'
+        # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+        # Run mlflow train job
+      - name: Run train job
+        run: python train_mlflow.py
