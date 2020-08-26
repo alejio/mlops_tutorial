@@ -61,4 +61,4 @@ jobs:
         with:
           issue-number: 1
           body: |
-            {{ github.REF }}
+            ${{ env.MLFLOW_RUNS }}
