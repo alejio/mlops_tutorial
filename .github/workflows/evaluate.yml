@@ -54,12 +54,15 @@ jobs:
       # MLFLOW_RUNS=`python fetch_mlflow_runs.py > mlflow_runs`
       - name: Fetch runs
         run: |
-          echo "::set-env name=MLFLOW_RUNS::`python fetch_mlflow_runs.py`"
-          echo $MLFLOW_RUNS
+          echo "::set-env name=BASELINE_ACCURACY::`python fetch_mlflow_runs.py`"
+          echo "::set-env name=CANDIDATE_ACCURACY::`python fetch_mlflow_runs.py`"
         # Let the bot respond
       - name: Create or Update Comment
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
           issue-number: 1
           body: |
-            ${{ env.MLFLOW_RUNS }}
+            | **Model** | **Accuracy** |\n| ---------- | -------------- |
+            | _Baseline_ | ${{ env.BASELINE_ACCURACY }} |
+            | _Candidate_ | ${{ env.CANDIDATE_ACCURACY }} |
+            
