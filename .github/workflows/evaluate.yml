@@ -51,12 +51,13 @@ jobs:
       #   if: success() && steps.findPr.outputs.number
       #   env:
       #     PR: ${{ steps.findPr.outputs.number }}
+      - name: Fetch runs
+        run: |
+          MLFLOW_RUNS=`python fetch_mlflow_runs.py > mlflow_runs`
         # Let the bot respond
       - name: Create or Update Comment
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
           issue-number: 1
           body: |
-            | \\*\\*Model\\*\\* | \\*\\*Accuracy\\*\\* |
-            | ---------- | -------------- |
-            | \\_Baseline\\_ | 0.973340587595 |
+            {{ $MLFLOW_RUNS }}
