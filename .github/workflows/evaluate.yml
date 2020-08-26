@@ -54,7 +54,7 @@ jobs:
       # MLFLOW_RUNS=`python fetch_mlflow_runs.py > mlflow_runs`
       - name: Fetch runs
         run: |
-          MLFLOW_RUNS='**hello**'
+          ::set-env name={MLFLOW_RUNS}::{**hello**}
         # Let the bot respond
       - name: Create or Update Comment
         uses: peter-evans/create-or-update-comment@v1.4.2
