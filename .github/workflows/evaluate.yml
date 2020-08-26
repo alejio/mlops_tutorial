@@ -1,16 +1,31 @@
-name: ChatOps
+name: MLOps for PR
 on: [issue_comment]
 
 jobs:
-  evaluate:
-    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/evaluate')
+  label-pr:
     runs-on: ubuntu-latest
     steps:
-      - uses: machine-learning-apps/actions-chatops@master
+      - name: ChatOps For Pull Requests
+        uses: machine-learning-apps/actions-chatops@1.41
         with:
           APP_PEM: ${{ secrets.APP_PEM }}
           APP_ID: ${{ secrets.APP_ID }}
           TRIGGER_PHRASE: "/evaluate"
-          INDICATOR_LABEL: "Evaluation Pending"
+          INDICATOR_LABEL: "evaluation-pending"
         env:
           GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
+        id: prcomm
+        - name: clone branch of PR
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        uses: actions/checkout@master
+        with:
+          ref: ${{ steps.prcomm.outputs.SHA }}
+
+        # This step is a toy example that illustrates how you can use outputs from the pr-command action
+      - name: print variables
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        run: echo "${USERNAME} made a triggering comment on PR# ${PR_NUMBER} for ${BRANCH_NAME}"
+        env: 
+          BRANCH_NAME: ${{ steps.prcomm.outputs.BRANCH_NAME }}
+          PR_NUMBER: ${{ steps.prcomm.outputs.PULL_REQUEST_NUMBER }
+          USERNAME: ${{ steps.prcomm.outputs.COMMENTER_USERNAME }}
