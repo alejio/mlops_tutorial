@@ -19,7 +19,7 @@ jobs:
         # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
       - name: clone branch of PR
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
-        uses: actions/checkout@master
+        uses: actions/checkout@v2.3.2
         with:
           ref: ${{ steps.prcomm.outputs.SHA }}
 
@@ -42,8 +42,8 @@ jobs:
       #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       #   id: trainjob
         # Get the PR number for the subsequent comment action
-      - name: Find current Pull Request number
-        uses: jwalton/gh-find-current-pr@v1.0.2
+      - uses: actions/checkout@v2.3.2
+      - uses: jwalton/gh-find-current-pr@v1.0.2
         id: findPr
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
