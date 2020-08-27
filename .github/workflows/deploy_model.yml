@@ -22,7 +22,7 @@ jobs:
         if: steps.prcomm3.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/checkout@v2.3.2
         with:
-          ref: ${{ steps.prcomm.outputs.SHA }}
+          ref: ${{ steps.prcomm3.outputs.SHA }}
 
       # Set up Python
       - name: Set up Python v3.8.5
