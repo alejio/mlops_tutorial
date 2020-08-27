@@ -1,5 +1,4 @@
 import mlflow
-import click
 
 TRACKING_URI = "http://testuser:test@ec2-3-9-174-162.eu-west-2.compute.amazonaws.com"
 
