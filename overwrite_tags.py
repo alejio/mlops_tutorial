@@ -23,4 +23,4 @@ def overwrite_tags(experiment_id, baseline_run_id, candidate_run_id):
 
 
 if __name__ == "__main__":
-    overwrite_tags()
+    overwrite_tags(experiment_id)
