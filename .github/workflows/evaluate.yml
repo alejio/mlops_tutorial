@@ -21,7 +21,7 @@ jobs:
         with:
           issue-number: 1
           body: |
-            Github Actions is kicking off a training job tracked with the [MLflow remote server](http://ec2-3-9-174-162.eu-west-2.compute.amazonaws.com/#/).
+            Github Actions is kicking off a training job tracked with the [MLflow remote server](${{ secrets.TRACKING_URI }}).
       
         # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
       - name: clone branch of PR
@@ -65,18 +65,23 @@ jobs:
 
       - name: Fetch runs
         run: |
-          echo "::set-env name=BASELINE_ACCURACY::`python fetch_mlflow_runs.py --run baseline --attribute 'metrics.training accuracy'`"
-          echo "::set-env name=CANDIDATE_ACCURACY::`python fetch_mlflow_runs.py --run candidate --attribute 'metrics.training accuracy'`"
-      
+          echo "::set-env name=EXPERIMENT_ID::`python fetch_mlflow_runs.py --run baseline --attribute 'experiment_id'`"
+          echo "::set-env name=BASELINE_RUNID::`python fetch_mlflow_runs.py --run baseline --attribute 'run_id'`"
+          echo "::set-env name=BASELINE_TRAIN_ACCURACY::`python fetch_mlflow_runs.py --run baseline --attribute 'metrics.training accuracy'`"
+          echo "::set-env name=BASELINE_ARTIFACT_URI::`python fetch_mlflow_runs.py --run baseline --attribute 'run_id'`"
+          echo "::set-env name=CANDIDATE_RUNID::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
+          echo "::set-env name=CANDIDATE_TRAIN_ACCURACY::`python fetch_mlflow_runs.py --run candidate --attribute 'metrics.training accuracy'`"
+          echo "::set-env name=CANDIDATE_ARTIFACT_URI::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
+
       # Let the bot respond
       - name: Create or Update Comment
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
           issue-number: 1
           body: |
-            |Model           |Accuracy                       |
-            |----------------|-------------------------------|
-            |_Baseline_      |${{ env.BASELINE_ACCURACY }}   |
-            |_Candidate_     |${{ env.CANDIDATE_ACCURACY }}  |
+            |Model       |MLflow Run ID                                                                                                        |S3 Artifact URI                                                                                                                                                           |Training Accuracy                   |
+            |------------|---------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------|
+            |_Baseline_  |[${{ env.BASELINE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/${{ env.EXPERIMENT_ID }}/${{ env.BASELINE_RUNID }})   |[${{ env.BASELINE_ARTIFACT_URI }}](https://s3.console.aws.amazon.com/s3/buckets/workshop-mlflow-artifacts/${{ env.EXPERIMENT_ID }}/${{ env.BASELINE_RUNID }}/artifacts)   |${{ env.BASELINE_TRAIN_ACCURACY }}  |
+            |_Candidate_ |[${{ env.CANDIDATE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/${{ env.EXPERIMENT_ID }}/${{ env.CANDIDATE_RUNID }}) |[${{ env.CANDIDATE_ARTIFACT_URI }}](https://s3.console.aws.amazon.com/s3/buckets/workshop-mlflow-artifacts/${{ env.EXPERIMENT_ID }}/${{ env.CANDIDATE_RUNID }}/artifacts) |${{ env.CANDIDATE_TRAIN_ACCURACY }} |
             
-            Results queried from MLflow Tracking Server
+            ### Results queried from [MLflow Tracking Server](${{ secrets.MLFLOW_TRACKING_URI }})
