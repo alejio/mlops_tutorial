@@ -11,7 +11,7 @@ def fetch_live_model_id(tracking_uri, experiment_id, query):
     runs = mlflow.search_runs(experiment_ids=[experiment_id], filter_string=query).iloc[
         0
     ]
-    print(runs["run_id"].values[0])
+    print(runs["run_id"])
 
 
 if __name__ == "__main__":
