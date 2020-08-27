@@ -3,6 +3,7 @@ on: [issue_comment]
 
 jobs:
     approve:
+        if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/lgtm')
         runs-on: ubuntu-latest
         steps:
         - name: ChatOps For Pull Requests
