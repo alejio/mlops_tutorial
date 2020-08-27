@@ -3,7 +3,7 @@ import click
 
 TRACKING_URI = "http://testuser:test@ec2-3-9-174-162.eu-west-2.compute.amazonaws.com"
 
-baseline_query = "tags.production_ready='1'"
+baseline_query = "tags.live='1'"
 candidate_query = "tags.production_candidate='1'"
 experiment_id = "0"
 
