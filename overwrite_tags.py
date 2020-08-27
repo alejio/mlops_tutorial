@@ -15,7 +15,9 @@ def overwrite_tags(baseline_run_id, candidate_run_id):
     client.set_tag(baseline_run_id, "live", 0)
     print(f"Setting live tag to 1 for candidate model run ID {candidate_run_id}")
     client.set_tag(candidate_run_id, "live", 1)
-    run_ids = client.search_runs(experiment_id=experiment_id, query=query)["run_id"]
+    run_ids = client.search_runs(experiment_ids=[experiment_id], filter_string=query)[
+        "run_id"
+    ]
     print("Cleaning up production_candidate tags within experiment")
     for run_id in run_ids:
         print(f"Setting production_candidate tag to 0 for run ID {run_id}")
