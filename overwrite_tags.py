@@ -9,7 +9,7 @@ query = "tags.production_candidate='1'"
 @click.command()
 @click.option("--baseline_run_id")
 @click.option("--candidate_run_id")
-def overwrite_tags(experiment_id, baseline_run_id, candidate_run_id):
+def overwrite_tags(baseline_run_id, candidate_run_id):
     client = mlflow.tracking.MlflowClient(tracking_uri=TRACKING_URI)
     print(f"Setting live tag to 0 for existing live model run ID {baseline_run_id}")
     client.set_tag(baseline_run_id, "live", 0)
@@ -23,4 +23,4 @@ def overwrite_tags(experiment_id, baseline_run_id, candidate_run_id):
 
 
 if __name__ == "__main__":
-    overwrite_tags(experiment_id)
+    overwrite_tags()
