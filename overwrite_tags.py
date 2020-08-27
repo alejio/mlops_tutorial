@@ -18,8 +18,7 @@ def overwrite_tags(baseline_run_id, candidate_run_id):
     runs = client.search_runs(experiment_ids=[experiment_id], filter_string=query)
     if len(runs) > 0:
         print("Cleaning up residual production_candidate tags within experiment")
-        print(runs["run_id"])
-        run_ids_list = [run_id for run_id in runs["run_id"]]
+        run_ids_list = [elem.info.run_id for elem in runs]
         for run_id in run_ids_list:
             print(f"Setting production_candidate tag to 0 for run ID {run_id}")
             client.set_tag(run_id, "production_candidate", 0)
