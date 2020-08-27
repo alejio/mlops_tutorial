@@ -1,0 +1,88 @@
+name: MLOps for PR
+on: [issue_comment]
+
+jobs:
+  evaluate:
+    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/evaluate')
+    runs-on: ubuntu-latest
+    steps:
+      - name: ChatOps For Pull Requests
+        uses: machine-learning-apps/actions-chatops@1.41
+        with:
+          APP_PEM: ${{ secrets.APP_PEM }}
+          APP_ID: ${{ secrets.APP_ID }}
+          TRIGGER_PHRASE: "/evaluate"
+          INDICATOR_LABEL: "evaluation-pending"
+        env:
+          GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
+        id: prcomm
+
+      - name: Create Comment
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          issue-number: 1
+          body: |
+            I'm kicking off a training job tracked with the [MLflow remote server](${{ secrets.TRACKING_URI }}).
+      
+        # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
+      - name: clone branch of PR
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        uses: actions/checkout@v2.3.2
+        with:
+          ref: ${{ steps.prcomm.outputs.SHA }}
+
+      # Set up Python
+      - name: Set up Python v3.8.5
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.5'
+
+        # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+        # Run mlflow train job
+      - name: Run train job
+        run: python train_mlflow.py
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        id: trainjob
+
+        # Get the PR number for the subsequent comment action
+      # - uses: actions/checkout@v2.3.2
+      # - uses: jwalton/gh-find-current-pr@v1.0.2
+      #   id: findPr
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # - run: echo "Your PR is ${PR}"
+      #   if: success() && steps.findPr.outputs.number
+      #   env:
+      #     PR: ${{ steps.findPr.outputs.number }}
+
+      - name: Fetch runs
+        run: |
+          echo "::set-env name=EXPERIMENT_ID::`python fetch_mlflow_runs.py --run baseline --attribute 'experiment_id'`"
+          echo "::set-env name=BASELINE_RUNID::`python fetch_mlflow_runs.py --run baseline --attribute 'run_id'`"
+          echo "::set-env name=BASELINE_TRAIN_ACCURACY::`python fetch_mlflow_runs.py --run baseline --attribute 'metrics.training accuracy'`"
+          echo "::set-env name=BASELINE_ARTIFACT_URI::`python fetch_mlflow_runs.py --run baseline --attribute 'run_id'`"
+          echo "::set-env name=CANDIDATE_RUNID::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
+          echo "::set-env name=CANDIDATE_TRAIN_ACCURACY::`python fetch_mlflow_runs.py --run candidate --attribute 'metrics.training accuracy'`"
+          echo "::set-env name=CANDIDATE_ARTIFACT_URI::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
+
+      # Let the bot respond
+      - name: Create or Update Comment
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          issue-number: 1
+          body: |
+            |Model       |MLflow Run ID                                                                                                                           |S3 Artifact URI                                                                                                                                                                             |Training Accuracy                   |
+            |------------|----------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------|
+            |_Baseline_  |[${{ env.BASELINE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ env.EXPERIMENT_ID }}/runs/${{ env.BASELINE_RUNID }})   |[${{ env.BASELINE_ARTIFACT_URI }}](https://s3.console.aws.amazon.com/s3/buckets/workshop-mlflow-artifacts/${{ env.EXPERIMENT_ID }}/${{ env.BASELINE_RUNID }}/artifacts/?region=eu-west-2)   |${{ env.BASELINE_TRAIN_ACCURACY }}  |
+            |_Candidate_ |[${{ env.CANDIDATE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ env.EXPERIMENT_ID }}/runs/${{ env.CANDIDATE_RUNID }}) |[${{ env.CANDIDATE_ARTIFACT_URI }}](https://s3.console.aws.amazon.com/s3/buckets/workshop-mlflow-artifacts/${{ env.EXPERIMENT_ID }}/${{ env.CANDIDATE_RUNID }}/artifacts/?region=eu-west-2) |${{ env.CANDIDATE_TRAIN_ACCURACY }} |
+            
+            ### Results queried from [MLflow Tracking Server](${{ secrets.MLFLOW_TRACKING_URI }})
