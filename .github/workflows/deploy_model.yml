@@ -49,5 +49,7 @@ jobs:
         with:
           issue-number: 1
           body: |
-            I'm deploying the candidate model with run ID ${{ env.CANDIDATE_RUNID }} to production.
+            I'm deploying the candidate model with run ID [${{ env.CANDIDATE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ env.EXPERIMENT_ID }}/runs/${{ env.CANDIDATE_RUNID }}) to production.
       
+      #- name: Overwrite MLFlow run tags
+        
