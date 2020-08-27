@@ -11,7 +11,7 @@ jobs:
         with:
           APP_PEM: ${{ secrets.APP_PEM }}
           APP_ID: ${{ secrets.APP_ID }}
-          TRIGGER_PHRASE: "/evaluate"
+          TRIGGER_PHRASE: "/deploy-candidate"
           INDICATOR_LABEL: "deployment-pending"
         env:
           GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
