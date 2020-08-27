@@ -2,7 +2,7 @@ name: MLOps for PR
 on: [issue_comment]
 
 jobs:
-  label-pr:
+  evaluate:
     runs-on: ubuntu-latest
     steps:
       - name: ChatOps For Pull Requests
@@ -85,3 +85,24 @@ jobs:
             |_Candidate_ |[${{ env.CANDIDATE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ env.EXPERIMENT_ID }}/runs/${{ env.CANDIDATE_RUNID }}) |[${{ env.CANDIDATE_ARTIFACT_URI }}](https://s3.console.aws.amazon.com/s3/buckets/workshop-mlflow-artifacts/${{ env.EXPERIMENT_ID }}/${{ env.CANDIDATE_RUNID }}/artifacts/?region=eu-west-2) |${{ env.CANDIDATE_TRAIN_ACCURACY }} |
             
             ### Results queried from [MLflow Tracking Server](${{ secrets.MLFLOW_TRACKING_URI }})
+  
+  approve:
+    needs: evaluate
+    runs-on: ubuntu-latest
+    steps:
+      - name: ChatOps For Pull Requests
+        uses: machine-learning-apps/actions-chatops@1.41
+        with:
+          APP_PEM: ${{ secrets.APP_PEM }}
+          APP_ID: ${{ secrets.APP_ID }}
+          TRIGGER_PHRASE: "/lgtm"
+          INDICATOR_LABEL: "evaluation complete"
+        env:
+          GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
+        id: prcomm2
+      - name: Remove Previous Label
+        uses: buildsville/add-remove-label@v1
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
+          label: evaluation-pending
+          type: remove
