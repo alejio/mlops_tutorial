@@ -1,0 +1,65 @@
+name: Deploy candidate model to prod
+on: [issue_comment]
+
+jobs:
+  deploy-candidate:
+    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/deploy-candidate')
+    runs-on: ubuntu-latest
+    steps:
+      - name: ChatOps For Pull Requests
+        uses: machine-learning-apps/actions-chatops@1.41
+        with:
+          APP_PEM: ${{ secrets.APP_PEM }}
+          APP_ID: ${{ secrets.APP_ID }}
+          TRIGGER_PHRASE: "/deploy-candidate"
+          INDICATOR_LABEL: "deployment-pending"
+        env:
+          GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
+        id: prcomm3
+        
+      # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
+      - name: clone branch of PR
+        if: steps.prcomm3.outputs.BOOL_TRIGGERED == 'true'
+        uses: actions/checkout@v2.3.2
+        with:
+          ref: ${{ steps.prcomm3.outputs.SHA }}
+
+      # Set up Python
+      - name: Set up Python v3.8.5
+        if: steps.prcomm3.outputs.BOOL_TRIGGERED == 'true'
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.5'
+
+        # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-cli.txt
+
+      - name: Fetch runs
+        run: |
+            echo "::set-env name=EXPERIMENT_ID::`python fetch_mlflow_runs.py --run baseline --attribute 'experiment_id'`"
+            echo "::set-env name=BASELINE_RUNID::`python fetch_mlflow_runs.py --run baseline --attribute 'run_id'`"
+            echo "::set-env name=CANDIDATE_RUNID::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
+
+      - name: Create Comment
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          issue-number: 1
+          body: |
+            I'm deploying the candidate model with run ID [${{ env.CANDIDATE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ env.EXPERIMENT_ID }}/runs/${{ env.CANDIDATE_RUNID }}) to production.
+      
+      - name: Overwrite MLFlow run tags
+        run: python overwrite_tags.py --baseline_run_id ${{ env.BASELINE_RUNID }} --candidate_run_id ${{ env.CANDIDATE_RUNID }}
+
+      - name: Query deployed model 
+        run: |
+            echo "::set-env name=CURRENTLY_DEPLOYED_MODEL::`python fetch_currently_deployed_model.py`"
+
+      - name: Final Comment
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+            issue-number: 1
+            body: |
+                Candidate model deployed to prod! Run ID in production is [${{ env.CURRENTLY_DEPLOYED_MODEL }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ env.EXPERIMENT_ID }}/runs/${{ env.CURRENTLY_DEPLOYED_MODEL }}).
