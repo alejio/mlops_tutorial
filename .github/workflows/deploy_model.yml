@@ -1,0 +1,31 @@
+name: Deploy candidate model to prod
+on: [issue_comment]
+
+jobs:
+  evaluate:
+    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/deploy-candidate')
+    runs-on: ubuntu-latest
+    steps:
+      - name: ChatOps For Pull Requests
+        uses: machine-learning-apps/actions-chatops@1.41
+        with:
+          APP_PEM: ${{ secrets.APP_PEM }}
+          APP_ID: ${{ secrets.APP_ID }}
+          TRIGGER_PHRASE: "/evaluate"
+          INDICATOR_LABEL: "deployment-pending"
+        env:
+          GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
+        id: prcomm3
+      - name: Fetch candidate run
+        run: |
+          echo "::set-env name=EXPERIMENT_ID::`python fetch_mlflow_runs.py --run baseline --attribute 'experiment_id'`"
+          echo "::set-env name=CANDIDATE_RUNID::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
+          echo "::set-env name=CANDIDATE_TRAIN_ACCURACY::`python fetch_mlflow_runs.py --run candidate --attribute 'metrics.training accuracy'`"
+          echo "::set-env name=CANDIDATE_ARTIFACT_URI::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
+      - name: Create Comment
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          issue-number: 1
+          body: |
+            I'm deploying the candidate model with run ID ${{ env.CANDIDATE_RUNID }} to production.
+      
