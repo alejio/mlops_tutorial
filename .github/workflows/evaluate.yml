@@ -15,6 +15,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
         id: prcomm
+        - name: Fetch runs
+        run: |
+          echo "::set-env name=BASELINE_ACCURACY::`python fetch_mlflow_runs.py --run baseline --attribute 'metrics.training accuracy'`"
+          echo "::set-env name=CANDIDATE_ACCURACY::`python fetch_mlflow_runs.py --run candidate --attribute 'metrics.training accuracy'`"
+ 
+          - name: Create Comment
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          issue-number: 1
+          body: |
+            Github Actions is kicking off a training job tracked with the [MLflow remote server](http://ec2-3-9-174-162.eu-west-2.compute.amazonaws.com/#/).
       
         # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
       - name: clone branch of PR
@@ -67,3 +78,4 @@ jobs:
             |_Baseline_      |${{ env.BASELINE_ACCURACY }}   |
             |_Candidate_     |${{ env.CANDIDATE_ACCURACY }}  |
             
+            Results queried from MLflow Tracking Server
