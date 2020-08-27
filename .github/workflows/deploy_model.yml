@@ -39,13 +39,9 @@ jobs:
 
       - name: Fetch candidate run
         run: |
-        echo "::set-env name=EXPERIMENT_ID::`python fetch_mlflow_runs.py --run baseline --attribute 'experiment_id'`"
-        echo "::set-env name=BASELINE_RUNID::`python fetch_mlflow_runs.py --run baseline --attribute 'run_id'`"
-        echo "::set-env name=BASELINE_TRAIN_ACCURACY::`python fetch_mlflow_runs.py --run baseline --attribute 'metrics.training accuracy'`"
-        echo "::set-env name=BASELINE_ARTIFACT_URI::`python fetch_mlflow_runs.py --run baseline --attribute 'run_id'`"
-        echo "::set-env name=CANDIDATE_RUNID::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
-        echo "::set-env name=CANDIDATE_TRAIN_ACCURACY::`python fetch_mlflow_runs.py --run candidate --attribute 'metrics.training accuracy'`"
-        echo "::set-env name=CANDIDATE_ARTIFACT_URI::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
+            echo "::set-env name=EXPERIMENT_ID::`python fetch_mlflow_runs.py --run baseline --attribute 'experiment_id'`"
+            echo "::set-env name=BASELINE_RUNID::`python fetch_mlflow_runs.py --run baseline --attribute 'run_id'`"
+            echo "::set-env name=CANDIDATE_RUNID::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
 
       - name: Create Comment
         uses: peter-evans/create-or-update-comment@v1.4.2
