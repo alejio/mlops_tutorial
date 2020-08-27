@@ -87,7 +87,6 @@ jobs:
             ### Results queried from [MLflow Tracking Server](${{ secrets.MLFLOW_TRACKING_URI }})
   
   approve:
-    needs: evaluate
     runs-on: ubuntu-latest
     steps:
       - name: ChatOps For Pull Requests
