@@ -16,9 +16,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
         id: prcomm2
+      - uses: actions/checkout@v2
       - name: Remove label
-        uses: buildsville/add-remove-label@v1
+        uses: actions-ecosystem/action-remove-labels@v1.0.0
         with:
-          token: ${{secrets.GITHUB_TOKEN}}
-          label: "evaluation-pending"
-          type: remove
+          github_token: ${{ secrets.github_token }}
+          labels: "evaluation-pending"
