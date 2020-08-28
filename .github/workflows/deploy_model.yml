@@ -16,7 +16,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
         id: prcomm3
-        
+      
+      - name: Remove label
+        uses: buildsville/add-remove-label@v1
+        with:
+          token: ${{secrets.github_token}}
+          label: evaluation-started
+          type: remove
+
+      - name: Add label
+        uses: buildsville/add-remove-label@v1
+        with:
+          token: ${{secrets.github_token}}
+          label: evaluation-complete
+          type: add
+
       # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
       - name: clone branch of PR
         if: steps.prcomm3.outputs.BOOL_TRIGGERED == 'true'
@@ -43,10 +57,24 @@ jobs:
             echo "::set-env name=BASELINE_RUNID::`python fetch_mlflow_runs.py --run baseline --attribute 'run_id'`"
             echo "::set-env name=CANDIDATE_RUNID::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
 
+      - name: Get PR number
+        uses: actions/github-script@v3.0.0
+        id: get-pr-number
+        with:
+          script: |
+            const {data: pulls} = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: '${{ github.event.client_payload.ref }}'
+            })
+            return pulls[0].number
+          result-encoding: string
+
       - name: Create Comment
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
-          issue-number: 1
+          issue-number: ${{ steps.get-pr-number.outputs.result }}
           body: |
             I'm deploying the candidate model with run ID [${{ env.CANDIDATE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ env.EXPERIMENT_ID }}/runs/${{ env.CANDIDATE_RUNID }}) to production.
       
@@ -60,6 +88,19 @@ jobs:
       - name: Final Comment
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
-            issue-number: 1
+            issue-number: ${{ steps.get-pr-number.outputs.result }}
             body: |
                 Candidate model deployed to prod! Run ID in production is [${{ env.CURRENTLY_DEPLOYED_MODEL }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ env.EXPERIMENT_ID }}/runs/${{ env.CURRENTLY_DEPLOYED_MODEL }}).
+        
+      - name: Add label
+        uses: buildsville/add-remove-label@v1
+        with:
+          token: ${{secrets.github_token}}
+          label: deployed
+          type: add
+  
+      # - name: Remove label
+      #   uses: actions-ecosystem/action-remove-labels@v1.0.0
+      #   with:
+      #     github_token: ${{ secrets.github_token }}
+      #     labels: "evaluation-pending"

@@ -12,7 +12,7 @@ jobs:
           APP_PEM: ${{ secrets.APP_PEM }}
           APP_ID: ${{ secrets.APP_ID }}
           TRIGGER_PHRASE: "/evaluate"
-          INDICATOR_LABEL: "evaluation-pending"
+          INDICATOR_LABEL: "evaluation-started"
         env:
           GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
         id: prcomm
@@ -36,7 +36,7 @@ jobs:
         with:
           issue-number: ${{ steps.get-pr-number.outputs.result }}
           body: |
-            I'm kicking off a training job tracked with the [MLflow remote server](${{ secrets.TRACKING_URI }}).
+            I'm kicking off a training job tracked with the [MLflow remote server](${{ secrets.MLFLOW_TRACKING_URI }}).
       
         # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
       - name: clone branch of PR
