@@ -30,6 +30,7 @@ jobs:
             return pulls[0].number
           result-encoding: string
       - run: echo ${{ steps.get-pr-number.outputs.result }}
+        shell: bash
       - run:   echo ::set-env name=PULL_NUMBER::$(echo "$GITHUB_REF" | awk -F / '{print $3}')
         shell: bash
         # Get the PR number for the subsequent comment action
