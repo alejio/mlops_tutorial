@@ -26,6 +26,8 @@ jobs:
     #       github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - run: echo "Your PR is ${PULL_NUMBER}"
+      - run: echo ${{ github.event_number }}
+      - run: echo ${{ github.ref }}
         # if: success() && steps.findPr.outputs.number
         # env:
         #   PR: ${{ steps.findPr.outputs.number }}
