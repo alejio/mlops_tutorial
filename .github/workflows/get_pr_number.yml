@@ -1,8 +1,8 @@
-name: MLOps for PR
+name: Get PR number test
 on: [issue_comment]
 
 jobs:
-  evaluate:
+  getpr:
     if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/get-pr')
     runs-on: ubuntu-latest
     steps:
@@ -16,15 +16,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
         id: prcomm
-
+      - run:   echo ::set-env name=PULL_NUMBER::$(echo "$GITHUB_REF" | awk -F / '{print $3}')
+        shell: bash
         # Get the PR number for the subsequent comment action
-      - uses: actions/checkout@v2.3.2
-      - uses: jwalton/gh-find-current-pr@v1.0.2
-        id: findPr
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+    #   - uses: actions/checkout@v2.3.2
+    #   - uses: jwalton/gh-find-current-pr@v1.0.2
+    #     id: findPr
+    #     with:
+    #       github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: echo "Your PR is ${PR}"
-        if: success() && steps.findPr.outputs.number
-        env:
-          PR: ${{ steps.findPr.outputs.number }}
+      - run: echo "Your PR is ${PULL_NUMBER}"
+        # if: success() && steps.findPr.outputs.number
+        # env:
+        #   PR: ${{ steps.findPr.outputs.number }}
