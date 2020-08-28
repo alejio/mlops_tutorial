@@ -24,7 +24,7 @@ jobs:
           labels: "evaluation-started"
 
       - name: Add evaluation-complete label
-        uses: actions-ecosystem/action-remove-labels@v1.1.0
+        uses: actions-ecosystem/action-add-labels@v1.1.0
         with:
           github_token: ${{ secrets.github_token }}
           labels: "evaluation-complete"
@@ -90,8 +90,8 @@ jobs:
             body: |
                 Candidate model deployed to prod! Run ID in production is [${{ env.CURRENTLY_DEPLOYED_MODEL }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ env.EXPERIMENT_ID }}/runs/${{ env.CURRENTLY_DEPLOYED_MODEL }}).
 
-      - name: Add evaluation-complete label
-        uses: actions-ecosystem/action-remove-labels@v1.1.0
+      - name: Add deployed label
+        uses: actions-ecosystem/action-add-labels@v1.1.0
         with:
           github_token: ${{ secrets.github_token }}
           labels: "deployed"
