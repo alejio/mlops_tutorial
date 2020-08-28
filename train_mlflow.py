@@ -20,7 +20,7 @@ def train(production_ready: bool = False):
     train = pd.read_csv("data/train.csv")
     X_train = train.drop(["subject", "Activity"], axis=1)
     y_train = train.Activity
-    max_depth = 12
+    max_depth = 8
     with mlflow.start_run(experiment_id=0):
         print(mlflow.get_artifact_uri())
         mlflow.log_param("max_depth", max_depth)
