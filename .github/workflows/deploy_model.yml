@@ -17,19 +17,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
         id: prcomm3
       
-      - name: Remove label
-        uses: buildsville/add-remove-label@v1
+      - name: Remove evaluation-started label
+        uses: actions-ecosystem/action-remove-labels@v1.0.0
         with:
-          token: ${{secrets.github_token}}
-          label: evaluation-started
-          type: remove
+          github_token: ${{ secrets.github_token }}
+          labels: "evaluation-started"
 
-      - name: Add label
-        uses: buildsville/add-remove-label@v1
+      - name: Add evaluation-complete label
+        uses: actions-ecosystem/action-remove-labels@v1.1.0
         with:
-          token: ${{secrets.github_token}}
-          label: evaluation-complete
-          type: add
+          github_token: ${{ secrets.github_token }}
+          labels: "evaluation-complete"
 
       # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
       - name: clone branch of PR
@@ -91,16 +89,9 @@ jobs:
             issue-number: ${{ steps.get-pr-number.outputs.result }}
             body: |
                 Candidate model deployed to prod! Run ID in production is [${{ env.CURRENTLY_DEPLOYED_MODEL }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ env.EXPERIMENT_ID }}/runs/${{ env.CURRENTLY_DEPLOYED_MODEL }}).
-        
-      - name: Add label
-        uses: buildsville/add-remove-label@v1
+
+      - name: Add evaluation-complete label
+        uses: actions-ecosystem/action-remove-labels@v1.1.0
         with:
-          token: ${{secrets.github_token}}
-          label: deployed
-          type: add
-  
-      # - name: Remove label
-      #   uses: actions-ecosystem/action-remove-labels@v1.0.0
-      #   with:
-      #     github_token: ${{ secrets.github_token }}
-      #     labels: "evaluation-pending"
+          github_token: ${{ secrets.github_token }}
+          labels: "deployed"
