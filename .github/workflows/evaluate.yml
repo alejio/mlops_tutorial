@@ -17,10 +17,24 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
         id: prcomm
 
+      - name: Get PR number
+        uses: actions/github-script@v3.0.0
+        id: get-pr-number
+        with:
+          script: |
+            const {data: pulls} = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: '${{ github.event.client_payload.ref }}'
+            })
+            return pulls[0].number
+          result-encoding: string
+
       - name: Create Comment
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
-          issue-number: 1
+          issue-number: ${{ steps.get-pr-number.outputs.result }}
           body: |
             I'm kicking off a training job tracked with the [MLflow remote server](${{ secrets.TRACKING_URI }}).
       
@@ -52,18 +66,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         id: trainjob
 
-        # Get the PR number for the subsequent comment action
-      # - uses: actions/checkout@v2.3.2
-      # - uses: jwalton/gh-find-current-pr@v1.0.2
-      #   id: findPr
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      # - run: echo "Your PR is ${PR}"
-      #   if: success() && steps.findPr.outputs.number
-      #   env:
-      #     PR: ${{ steps.findPr.outputs.number }}
-
       - name: Fetch runs
         run: |
           echo "::set-env name=EXPERIMENT_ID::`python fetch_mlflow_runs.py --run baseline --attribute 'experiment_id'`"
@@ -78,7 +80,7 @@ jobs:
       - name: Create or Update Comment
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
-          issue-number: 1
+          issue-number: ${{ steps.get-pr-number.outputs.result }}
           body: |
             |Model       |MLflow Run ID                                                                                                                           |S3 Artifact URI                                                                                                                                                                             |Training Accuracy                   |
             |------------|----------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------|
