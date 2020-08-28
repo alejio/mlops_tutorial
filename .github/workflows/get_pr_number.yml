@@ -1,0 +1,30 @@
+name: MLOps for PR
+on: [issue_comment]
+
+jobs:
+  evaluate:
+    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/get-pr')
+    runs-on: ubuntu-latest
+    steps:
+      - name: ChatOps For Pull Requests
+        uses: machine-learning-apps/actions-chatops@1.41
+        with:
+          APP_PEM: ${{ secrets.APP_PEM }}
+          APP_ID: ${{ secrets.APP_ID }}
+          TRIGGER_PHRASE: "/get-pr"
+          INDICATOR_LABEL: "test"
+        env:
+          GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
+        id: prcomm
+
+        # Get the PR number for the subsequent comment action
+      - uses: actions/checkout@v2.3.2
+      - uses: jwalton/gh-find-current-pr@v1.0.2
+        id: findPr
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: echo "Your PR is ${PR}"
+        if: success() && steps.findPr.outputs.number
+        env:
+          PR: ${{ steps.findPr.outputs.number }}
