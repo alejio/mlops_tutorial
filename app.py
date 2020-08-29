@@ -18,7 +18,6 @@ if not os.path.isfile("models/activity_classifier.joblib"):
         experiment_ids=[experiment_id], filter_string=query, order_by="end_time DESC"
     )
     run_id = runs["run_id"].values[0]
-    client = boto3.client("s3")
     bucket_name = "workshop-mlflow-artifacts"
     print(f"Bucket Name: {bucket_name}")
     artifact_path = f"{experiment_id}/{run_id}/artifacts/activity_classifier.joblib"
