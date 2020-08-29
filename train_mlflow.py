@@ -23,8 +23,8 @@ def train(production_ready: bool = False):
     s3.download_file(bucket_name, "data/train.csv", "train.csv")
     s3.download_file(bucket_name, "data/train.csv", "test.csv")
     print("Downloaded training and test data from S3!")
-    train = pd.read_csv("data/train.csv")
-    test = pd.read_csv("data/test.csv")
+    train = pd.read_csv("train.csv")
+    test = pd.read_csv("test.csv")
     X_train = train.drop(["subject", "Activity"], axis=1)
     X_test = test.drop(["subject", "Activity"], axis=1)
     y_train = train["Activity"]
@@ -47,6 +47,9 @@ def train(production_ready: bool = False):
             mlflow.set_tag("production_ready", 1)
         else:
             mlflow.set_tag("production_candidate", 1)
+        os.remove(f"{os.getcwd()}/activity_classifier.joblib")
+        os.remove(f"{os.getcwd()}/train.csv")
+        os.remove(f"{os.getcwd()}/test.csv")
 
 
 if __name__ == "__main__":
