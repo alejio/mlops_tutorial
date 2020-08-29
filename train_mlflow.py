@@ -19,16 +19,16 @@ def train(production_ready: bool = False):
     mlflow.set_tracking_uri(TRACKING_URI)
     s3 = boto3.client("s3")
     bucket_name = "workshop-mlflow-artifacts"
-    print("Download training and test data: start")
+    print("Start downloading training and test data from S3...")
     s3.download_file(bucket_name, "data/train.csv", "train.csv")
     s3.download_file(bucket_name, "data/train.csv", "test.csv")
-    print("Downloaded training and test data!")
+    print("Downloaded training and test data from S3!")
     train = pd.read_csv("data/train.csv")
     test = pd.read_csv("data/test.csv")
     X_train = train.drop(["subject", "Activity"], axis=1)
     X_test = test.drop(["subject", "Activity"], axis=1)
-    y_train = train.Activity
-    y_test = test.Activity
+    y_train = train["Activity"]
+    y_test = test["Activity"]
     max_depth = 8
     with mlflow.start_run(experiment_id=0):
         print(mlflow.get_artifact_uri())
