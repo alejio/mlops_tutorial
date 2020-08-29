@@ -12,7 +12,7 @@ jobs:
           APP_PEM: ${{ secrets.APP_PEM }}
           APP_ID: ${{ secrets.APP_ID }}
           TRIGGER_PHRASE: "/deploy-candidate"
-          INDICATOR_LABEL: "deployment-pending"
+          INDICATOR_LABEL: "evaluation-complete"
         env:
           GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
         id: prcomm3
@@ -22,12 +22,6 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           labels: "evaluation-started"
-
-      - name: Add evaluation-complete label
-        uses: actions-ecosystem/action-add-labels@v1.1.0
-        with:
-          github_token: ${{ secrets.github_token }}
-          labels: "evaluation-complete"
 
       # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
       - name: clone branch of PR
