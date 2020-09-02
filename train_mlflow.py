@@ -21,7 +21,7 @@ def train(production_ready: bool = False):
     bucket_name = "workshop-mlflow-artifacts"
     print("Start downloading training and test data from S3...")
     s3.download_file(bucket_name, "data/train.csv", "train.csv")
-    s3.download_file(bucket_name, "data/train.csv", "test.csv")
+    s3.download_file(bucket_name, "data/test.csv", "test.csv")
     print("Downloaded training and test data from S3!")
     train = pd.read_csv("train.csv")
     test = pd.read_csv("test.csv")
