@@ -12,7 +12,7 @@ if not os.path.isfile("models/activity_classifier.joblib"):
         "http://testuser:test@ec2-3-9-174-162.eu-west-2.compute.amazonaws.com"
     )
     mlflow.set_tracking_uri(TRACKING_URI)
-    query = "tags.production_ready='1'"
+    query = "tags.live='1'"
     experiment_id = "0"
     runs = mlflow.search_runs(
         experiment_ids=[experiment_id], filter_string=query, order_by="end_time DESC"
