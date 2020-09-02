@@ -21,7 +21,7 @@ def train(production_ready: bool = False):
     bucket_name = "workshop-mlflow-artifacts"
     print("Start downloading training and test data from S3...")
     s3.download_file(bucket_name, "data/train.csv", "train.csv")
-    s3.download_file(bucket_name, "data/train.csv", "test.csv")
+    s3.download_file(bucket_name, "data/test.csv", "test.csv")
     print("Downloaded training and test data from S3!")
     train = pd.read_csv("train.csv")
     test = pd.read_csv("test.csv")
@@ -29,7 +29,7 @@ def train(production_ready: bool = False):
     X_test = test.drop(["subject", "Activity"], axis=1)
     y_train = train["Activity"]
     y_test = test["Activity"]
-    max_depth = 8
+    max_depth = 9
     with mlflow.start_run(experiment_id=0):
         print(mlflow.get_artifact_uri())
         mlflow.log_param("max_depth", max_depth)
