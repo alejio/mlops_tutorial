@@ -2,8 +2,7 @@ name: Test Fetch Runs
 on: [push]
 
 jobs:
-  evaluate:
-    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/evaluate')
+  fetch:
     runs-on: ubuntu-latest
     steps:
       - name: Get PR number
