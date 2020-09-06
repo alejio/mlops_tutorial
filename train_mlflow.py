@@ -29,7 +29,7 @@ def train(production_ready: bool = False):
     X_test = test.drop(["subject", "Activity"], axis=1)
     y_train = train["Activity"]
     y_test = test["Activity"]
-    max_depth = 7
+    max_depth = 8
     with mlflow.start_run(experiment_id=0):
         print(mlflow.get_artifact_uri())
         mlflow.log_param("max_depth", max_depth)
