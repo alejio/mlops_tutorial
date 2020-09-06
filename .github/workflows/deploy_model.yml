@@ -45,6 +45,7 @@ jobs:
 
       - name: Fetch runs
         uses: alejio/mlflow-tracking-action@v1.0.1
+        id: fetch-runs
         with:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
           EXPERIMENT_ID: "0"
@@ -70,10 +71,10 @@ jobs:
         with:
           issue-number: ${{ steps.get-pr-number.outputs.result }}
           body: |
-            I'm deploying the candidate model with run ID [${{ env.CANDIDATE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ env.EXPERIMENT_ID }}/runs/${{ env.CANDIDATE_RUNID }}) to production.
+            I'm deploying the candidate model with run ID [${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ steps.fetch-runs.outputs.EXPERIMENT_ID }}/runs/${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}) to production.
       
       - name: Overwrite MLFlow run tags
-        run: python overwrite_tags.py --baseline_run_id ${{ env.BASELINE_RUNID }} --candidate_run_id ${{ env.CANDIDATE_RUNID }}
+        run: python overwrite_tags.py --baseline_run_id ${{ steps.fetch-runs.outputs.BASELINE_RUNID }} --candidate_run_id ${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}
 
       - name: Query deployed model 
         run: |
