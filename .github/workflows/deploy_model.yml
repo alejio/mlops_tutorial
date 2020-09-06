@@ -44,11 +44,13 @@ jobs:
           pip install -r requirements-cli.txt
 
       - name: Fetch runs
-        run: |
-            echo "::set-env name=EXPERIMENT_ID::`python fetch_mlflow_runs.py --run baseline --attribute 'experiment_id'`"
-            echo "::set-env name=BASELINE_RUNID::`python fetch_mlflow_runs.py --run baseline --attribute 'run_id'`"
-            echo "::set-env name=CANDIDATE_RUNID::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
-
+        uses: alejio/mlflow-tracking-action@v1.0.1
+        with:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+          EXPERIMENT_ID: "0"
+          BASELINE_RUN_QUERY: "tags.live='1'"
+          CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
+      
       - name: Get PR number
         uses: actions/github-script@v3.0.0
         id: get-pr-number
