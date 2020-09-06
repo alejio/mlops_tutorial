@@ -67,12 +67,12 @@ jobs:
         id: trainjob
 
       - name: Fetch runs
-      uses: alejio/mlflow-tracking-action@v1.0.1
-      with:
-        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-        EXPERIMENT_ID: "0"
-        BASELINE_RUN_QUERY: "tags.live='1'"
-        CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
+        uses: alejio/mlflow-tracking-action@v1.0.1
+        with:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+          EXPERIMENT_ID: "0"
+          BASELINE_RUN_QUERY: "tags.live='1'"
+          CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
 
       # Let the bot respond
       - name: Create or Update Comment
