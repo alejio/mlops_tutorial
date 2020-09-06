@@ -43,4 +43,4 @@ jobs:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
           EXPERIMENT_ID: "0"
           BASELINE_RUN_QUERY: "tags.live='1'"
-          CANDIDATE_RUN_QUERY: "production_candidate='1'"
+          CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
