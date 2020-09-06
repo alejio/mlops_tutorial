@@ -38,7 +38,7 @@ jobs:
           pip install -r requirements-cli.txt
 
       - name: Get Runs Using tags
-        uses: alejio/mlflow-tracking-action@master
+        uses: alejio/mlflow-tracking-action@v1.0.0
         with:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
           EXPERIMENT_ID: "0"
