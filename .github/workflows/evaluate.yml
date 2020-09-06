@@ -67,16 +67,12 @@ jobs:
         id: trainjob
 
       - name: Fetch runs
-        run: |
-          echo "::set-env name=EXPERIMENT_ID::`python fetch_mlflow_runs.py --run baseline --attribute 'experiment_id'`"
-          echo "::set-env name=BASELINE_RUNID::`python fetch_mlflow_runs.py --run baseline --attribute 'run_id'`"
-          echo "::set-env name=BASELINE_TRAIN_ACCURACY::`python fetch_mlflow_runs.py --run baseline --attribute 'metrics.training accuracy'`"
-          echo "::set-env name=BASELINE_TEST_ACCURACY::`python fetch_mlflow_runs.py --run baseline --attribute 'metrics.test accuracy'`"
-          echo "::set-env name=BASELINE_ARTIFACT_URI::`python fetch_mlflow_runs.py --run baseline --attribute 'run_id'`"
-          echo "::set-env name=CANDIDATE_RUNID::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
-          echo "::set-env name=CANDIDATE_TRAIN_ACCURACY::`python fetch_mlflow_runs.py --run candidate --attribute 'metrics.training accuracy'`"
-          echo "::set-env name=CANDIDATE_TEST_ACCURACY::`python fetch_mlflow_runs.py --run candidate --attribute 'metrics.test accuracy'`"
-          echo "::set-env name=CANDIDATE_ARTIFACT_URI::`python fetch_mlflow_runs.py --run candidate --attribute 'run_id'`"
+        uses: alejio/mlflow-tracking-action@v1.0.1
+        with:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+          EXPERIMENT_ID: "0"
+          BASELINE_RUN_QUERY: "tags.live='1'"
+          CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
 
       # Let the bot respond
       - name: Create or Update Comment

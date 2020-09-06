@@ -1,0 +1,46 @@
+name: Test Fetch Runs
+on: push
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get PR number
+        uses: actions/github-script@v3.0.0
+        id: get-pr-number
+        with:
+          script: |
+            const {data: pulls} = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: '${{ github.event.client_payload.ref }}'
+            })
+            return pulls[0].number
+          result-encoding: string
+     
+        # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
+      - name: clone branch of PR
+        uses: actions/checkout@v2.3.2
+        with:
+          ref: ${{ steps.prcomm.outputs.SHA }}
+
+      # Set up Python
+      - name: Set up Python v3.8.5
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.5'
+
+        # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-cli.txt
+
+      - name: Get Runs Using tags
+        uses: alejio/mlflow-tracking-action@v1.0.1
+        with:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+          EXPERIMENT_ID: "0"
+          BASELINE_RUN_QUERY: "tags.live='1'"
+          CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
