@@ -7,7 +7,8 @@ from awscli.customizations.s3.utils import split_s3_bucket_key
 import boto3
 
 
-if not os.path.isfile("models/activity_classifier.joblib"):
+@st.cache
+def load_model():
     TRACKING_URI = (
         "http://testuser:test@ec2-3-9-174-162.eu-west-2.compute.amazonaws.com"
     )
@@ -15,7 +16,9 @@ if not os.path.isfile("models/activity_classifier.joblib"):
     query = "tags.live='1'"
     experiment_id = "0"
     runs = mlflow.search_runs(
-        experiment_ids=[experiment_id], filter_string=query, order_by="end_time DESC"
+        experiment_ids=[experiment_id],
+        filter_string=query,
+        order_by=["attributes.end_time DESC"],
     )
     run_id = runs["run_id"].values[0]
     bucket_name = "workshop-mlflow-artifacts"
@@ -24,10 +27,11 @@ if not os.path.isfile("models/activity_classifier.joblib"):
     print(f"Artifact path: {artifact_path}")
     s3 = boto3.client("s3")
     print("Download start")
-    s3.download_file(bucket_name, artifact_path, "models/activity_classifier.joblib")
+    s3.download_file(bucket_name, artifact_path, "activity_classifier.joblib")
     print("Downloaded!")
+    model = load("activity_classifier.joblib")
+    return model
 
-model = load("models/activity_classifier.joblib")
 
 st.markdown("## Human activity predictor from smartphones!")
 
@@ -47,6 +51,7 @@ final_features = [np.array(int_features)]
 
 
 if st.button("Predict"):
+    model = load_model()
     prediction = model.predict(final_features)
     st.balloons()
     st.success(f"The predicted activity is {prediction[0]}")
