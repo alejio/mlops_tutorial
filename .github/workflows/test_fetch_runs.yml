@@ -38,9 +38,33 @@ jobs:
           pip install -r requirements-cli.txt
 
       - name: Get Runs Using tags
-        uses: alejio/mlflow-tracking-action@v1.0.1
+        uses: alejio/mlflow-tracking-action@v1.1.0
         with:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
           EXPERIMENT_ID: "0"
           BASELINE_RUN_QUERY: "tags.live='1'"
           CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
+
+      - name: test outputs
+        run: |
+          python -c "assert '${BOOL_COMPLETE}' == 'True'"
+          echo ${EXPERIMENT_ID}
+          echo ${BASELINE_RUNID}
+          echo ${BASELINE_TRAIN_ACCURACY}
+          echo ${BASELINE_TEST_ACCURACY}
+          echo ${BASELINE_ARTIFACT_URI}
+          echo ${CANDIDATE_RUNID}
+          echo ${CANDIDATE_TRAIN_ACCURACY}
+          echo ${CANDIDATE_TEST_ACCURACY}
+          echo ${CANDIDATE_ARTIFACT_URI}
+        env:
+          BOOL_COMPLETE: ${{ steps.mlflow.outputs.BOOL_COMPLETE }}
+          EXPERIMENT_ID: ${{ steps.mlflow.outputs.EXPERIMENT_ID }}
+          BASELINE_RUNID: ${{ steps.mlflow.outputs.BASELINE_RUNID }}
+          BASELINE_TRAIN_ACCURACY: ${{ steps.mlflow.outputs.BASELINE_TRAIN_ACCURACY }}
+          BASELINE_TEST_ACCURACY: ${{ steps.mlflow.outputs.BASELINE_TEST_ACCURACY }}
+          BASELINE_ARTIFACT_URI: ${{ steps.mlflow.outputs.BASELINE_ARTIFACT_URI }}
+          CANDIDATE_RUNID: ${{ steps.mlflow.outputs.CANDIDATE_RUNID }}
+          CANDIDATE_TRAIN_ACCURACY: ${{ steps.mlflow.outputs.CANDIDATE_TRAIN_ACCURACY }}
+          CANDIDATE_TEST_ACCURACY: ${{ steps.mlflow.outputs.CANDIDATE_TEST_ACCURACY }}
+          CANDIDATE_ARTIFACT_URI: ${{ steps.mlflow.outputs.CANDIDATE_ARTIFACT_URI }}
