@@ -44,7 +44,7 @@ jobs:
           pip install -r requirements-cli.txt
 
       - name: Fetch runs
-        uses: alejio/mlflow-tracking-action@v1.0.1
+        uses: alejio/mlflow-tracking-action@v1.1.0
         id: fetch-runs
         with:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
