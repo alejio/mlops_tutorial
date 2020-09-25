@@ -3,7 +3,6 @@ import numpy as np
 import mlflow
 import streamlit as st
 import os.path
-from awscli.customizations.s3.utils import split_s3_bucket_key
 import boto3
 
 
