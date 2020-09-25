@@ -2,3 +2,4 @@ joblib
 mlflow
 streamlit
 boto3
+scikit-learn
