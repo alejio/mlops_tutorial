@@ -8,8 +8,9 @@ import mlflow
 from joblib import dump
 import typer
 import boto3
-from logging import log
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
 
 train = typer.Typer()
 
@@ -23,10 +24,10 @@ def train(production_ready: bool = False) -> None:
     s3 = boto3.client("s3")
     bucket_name = "workshop-mlflow-artifacts"
 
-    log("Start downloading training and test data from S3...")
+    logging.debug("Start downloading training and test data from S3...")
     s3.download_file(bucket_name, "data/train.csv", "train.csv")
     s3.download_file(bucket_name, "data/test.csv", "test.csv")
-    log("Downloaded training and test data from S3!")
+    logging.debug("Downloaded training and test data from S3!")
 
     train = pd.read_csv("train.csv", names=["review", "sentiment"])
     test = pd.read_csv("test.csv", names=["review", "sentiment"])
@@ -35,23 +36,25 @@ def train(production_ready: bool = False) -> None:
     y_train = train["sentiment"]
     y_test = test["sentiment"]
 
-    with mlflow.start_run(experiment_id="sentiment_prediction"):
-        log(mlflow.get_artifact_uri())
+    with mlflow.start_run(experiment_id="2"):
+        logging.debug(mlflow.get_artifact_uri())
 
         feature_engineering_params = {"binary": True}
-        mlflow.log_param(**feature_engineering_params)
+        for k, v in feature_engineering_params.items():
+            mlflow.log_param(str(k), str(v))
         feature_engineering = CountVectorizer(**feature_engineering_params)
 
         classifier_params = {"alpha": 1.0, "binarize": 0.0}
-        mlflow.log_param(**classifier_params)
+        for k, v in classifier_params.items():
+            mlflow.log_param(str(k), str(v))
         classifier = BernoulliNB(**classifier_params)
 
-        log("Begin training..")
+        logging.debug("Begin training..")
         X_train = feature_engineering.fit_transform(X_raw_train)
         classifier.fit(X_train, y_train)
         y_pred_train = classifier.predict(X_train)
         train_accuracy = accuracy_score(y_train, y_pred_train)
-        log("Done training!")
+        logging.debug("Done training!")
 
         X_test = feature_engineering.transform(X_raw_test)
         y_pred_test = classifier.predict(X_test)
@@ -60,16 +63,16 @@ def train(production_ready: bool = False) -> None:
         mlflow.log_metric("training accuracy", train_accuracy)
         mlflow.log_metric("test accuracy", test_accuracy)
 
-        log("Persisting models..")
+        logging.debug("Persisting models..")
         dump(feature_engineering, f"{os.getcwd()}/feature_engineering.joblib")
         mlflow.log_artifact(f"{os.getcwd()}/feature_engineering.joblib")
 
         dump(classifier, f"{os.getcwd()}/classifier.joblib")
         mlflow.log_artifact(f"{os.getcwd()}/classifier.joblib")
-        log("Done persisting models!")
+        logging.debug("Done persisting models!")
 
         if production_ready:
-            mlflow.set_tag("production_ready", 1)
+            mlflow.set_tag("live", 1)
         else:
             mlflow.set_tag("production_candidate", 1)
 
