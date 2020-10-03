@@ -1,4 +1,7 @@
 import mlflow
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 TRACKING_URI = "http://testuser:test@ec2-3-9-174-162.eu-west-2.compute.amazonaws.com"
 
@@ -11,7 +14,7 @@ def fetch_live_model_id(tracking_uri, experiment_id, query):
     runs = mlflow.search_runs(experiment_ids=[experiment_id], filter_string=query).iloc[
         0
     ]
-    print(runs["run_id"])
+    logging.debug(runs["run_id"])
 
 
 if __name__ == "__main__":

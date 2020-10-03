@@ -1,5 +1,8 @@
 import mlflow
 import click
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 TRACKING_URI = "http://testuser:test@ec2-3-9-174-162.eu-west-2.compute.amazonaws.com"
 experiment_id = "0"
@@ -11,11 +14,15 @@ query = "tags.production_candidate='1'"
 @click.option("--candidate_run_id")
 def overwrite_tags(baseline_run_id, candidate_run_id):
     client = mlflow.tracking.MlflowClient(tracking_uri=TRACKING_URI)
-    print(f"Setting live tag to 0 for existing live model run ID {baseline_run_id}")
+    logging.debug(
+        f"Setting live tag to 0 for existing live model run ID {baseline_run_id}"
+    )
     client.set_tag(baseline_run_id, "live", 0)
-    print(f"Setting live tag to 1 for candidate model run ID {candidate_run_id}")
+    logging.debug(
+        f"Setting live tag to 1 for candidate model run ID {candidate_run_id}"
+    )
     client.set_tag(candidate_run_id, "live", 1)
-    print(
+    logging.debug(
         f"Setting production_candidate tag to 0 for candidate model run ID {candidate_run_id}"
     )
     client.set_tag(candidate_run_id, "production_candidate", 0)
