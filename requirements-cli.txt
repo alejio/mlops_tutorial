@@ -1,2 +1,2 @@
 mlflow
-click
+typer

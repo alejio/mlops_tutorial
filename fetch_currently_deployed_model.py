@@ -1,21 +1,20 @@
 import mlflow
 import logging
-
-logging.basicConfig(level=logging.DEBUG)
-
-TRACKING_URI = "http://testuser:test@ec2-3-9-174-162.eu-west-2.compute.amazonaws.com"
-
-query = "tags.live='1'"
-experiment_id = "0"
+from config import Config
+import typer
 
 
-def fetch_live_model_id(tracking_uri, experiment_id, query):
-    mlflow.set_tracking_uri(tracking_uri)
-    runs = mlflow.search_runs(experiment_ids=[experiment_id], filter_string=query).iloc[
-        0
-    ]
-    logging.debug(runs["run_id"])
+logging.basicConfig(level=Config.LOGGING)
+
+
+def fetch_live_model_id():
+    mlflow.set_tracking_uri(Config.TRACKING_URI)
+    runs = mlflow.search_runs(
+        experiment_ids=[Config.EXPERIMENT_ID],
+        filter_string=f"tags.{Config.LIVE_TAG}='1'",
+    ).iloc[0]
+    logging.info(runs["run_id"])
 
 
 if __name__ == "__main__":
-    fetch_live_model_id(TRACKING_URI, experiment_id, query)
+    typer.run(fetch_live_model_id)
