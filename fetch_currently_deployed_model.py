@@ -14,7 +14,7 @@ def fetch_live_model_id():
         filter_string=f"tags.{Config.LIVE_TAG}='1'",
     ).iloc[0]
     logging.info(runs["run_id"])
-    return runs["run_id"]
+    print(runs["run_id"])
 
 
 if __name__ == "__main__":
