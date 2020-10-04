@@ -7,10 +7,6 @@ import typer
 logging.basicConfig(level=Config.LOGGING)
 
 
-overwrite_tags = typer.Typer()
-
-
-@overwrite_tags.command()
 def overwrite_tags(baseline_run_id: str, candidate_run_id: str):
     client = mlflow.tracking.MlflowClient(tracking_uri=Config.TRACKING_URI)
     logging.info(
@@ -26,4 +22,4 @@ def overwrite_tags(baseline_run_id: str, candidate_run_id: str):
 
 
 if __name__ == "__main__":
-    overwrite_tags()
+    typer.run(overwrite_tags)

@@ -1,6 +1,8 @@
 import mlflow
 import logging
 from config import Config
+import typer
+
 
 logging.basicConfig(level=Config.LOGGING)
 
@@ -15,4 +17,4 @@ def fetch_live_model_id():
 
 
 if __name__ == "__main__":
-    fetch_live_model_id()
+    typer.run(fetch_live_model_id)

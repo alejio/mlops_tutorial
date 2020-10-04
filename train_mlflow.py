@@ -13,8 +13,6 @@ from config import Config
 
 logging.basicConfig(level=Config.LOGGING)
 
-train = typer.Typer()
-
 
 def download_and_load_data(
     bucket_name: str, directory: str, train_csv: str, test_csv: str
@@ -43,7 +41,6 @@ def download_and_load_data(
     }
 
 
-@train.command()
 def train(production_ready: bool = False) -> None:
 
     mlflow.set_tracking_uri(Config.TRACKING_URI)
@@ -99,4 +96,4 @@ def train(production_ready: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    train()
+    typer.run(train)
