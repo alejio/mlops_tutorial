@@ -48,7 +48,7 @@ def train(production_ready: bool = False) -> None:
         Config.BUCKET_NAME, Config.S3_DATA_DIR, Config.TRAIN_CSV, Config.TEST_CSV
     )
 
-    with mlflow.start_run(experiment_id="2"):
+    with mlflow.start_run(experiment_id=Config.EXPERIMENT_ID):
         logging.info(mlflow.get_artifact_uri())
 
         feature_engineering_params = {"binary": True}
@@ -56,7 +56,7 @@ def train(production_ready: bool = False) -> None:
             mlflow.log_param(str(k), str(v))
         feature_engineering = CountVectorizer(**feature_engineering_params)
 
-        classifier_params = {"alpha": 0.5, "binarize": 0.0}
+        classifier_params = {"alpha": 0.75, "binarize": 0.0}
         for k, v in classifier_params.items():
             mlflow.log_param(str(k), str(v))
         classifier = BernoulliNB(**classifier_params)
@@ -84,9 +84,9 @@ def train(production_ready: bool = False) -> None:
         logging.info("Done persisting models!")
 
         if production_ready:
-            mlflow.set_tag("live", 1)
+            mlflow.set_tag(Config.LIVE_TAG, 1)
         else:
-            mlflow.set_tag("production_candidate", 1)
+            mlflow.set_tag(Config.CANDIDATE_TAG, 1)
 
         # Cleanup
         os.remove(f"{os.getcwd()}/feature_engineering.joblib")
