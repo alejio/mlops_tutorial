@@ -74,7 +74,7 @@ jobs:
             I'm deploying the candidate model with run ID [${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ steps.fetch-runs.outputs.EXPERIMENT_ID }}/runs/${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}) to production.
       
       - name: Overwrite MLFlow run tags
-        run: python overwrite_tags.py --baseline_run_id ${{ steps.fetch-runs.outputs.BASELINE_RUNID }} --candidate_run_id ${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}
+        run: python overwrite_tags.py ${{ steps.fetch-runs.outputs.BASELINE_RUNID }} ${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}
 
       - name: Query deployed model 
         run: |
