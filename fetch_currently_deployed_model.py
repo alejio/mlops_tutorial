@@ -8,7 +8,7 @@ logging.basicConfig(level=Config.LOGGING)
 
 
 def fetch_live_model_id():
-    mlflow.set_tracking_uri()
+    mlflow.set_tracking_uri(Config.TRACKING_URI)
     runs = mlflow.search_runs(
         experiment_ids=[Config.EXPERIMENT_ID],
         filter_string=f"tags.{Config.LIVE_TAG}='1'",
