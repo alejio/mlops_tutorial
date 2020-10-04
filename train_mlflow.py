@@ -44,7 +44,7 @@ def train(production_ready: bool = False) -> None:
             mlflow.log_param(str(k), str(v))
         feature_engineering = CountVectorizer(**feature_engineering_params)
 
-        classifier_params = {"alpha": 1.0, "binarize": 0.0}
+        classifier_params = {"alpha": 0.5, "binarize": 0.0}
         for k, v in classifier_params.items():
             mlflow.log_param(str(k), str(v))
         classifier = BernoulliNB(**classifier_params)
