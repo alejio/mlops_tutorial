@@ -6,7 +6,7 @@ import os.path
 import boto3
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.info)
 
 
 @st.cache
@@ -24,19 +24,19 @@ def load_artefacts():
     )
     run_id = runs["run_id"].values[0]
     bucket_name = "workshop-mlflow-artifacts"
-    logging.debug(f"Bucket Name: {bucket_name}")
+    logging.info(f"Bucket Name: {bucket_name}")
     feature_engineering_path = (
         f"predict_sentiment/{run_id}/artifacts/feature_engineering.joblib"
     )
     classifier_path = f"predict_sentiment/{run_id}/artifacts/classifier.joblib"
-    logging.debug(f"Artifact path: {classifier_path}")
+    logging.info(f"Artifact path: {classifier_path}")
     s3 = boto3.client("s3")
-    logging.debug("Download start")
+    logging.info("Download start")
     s3.download_file(
         bucket_name, feature_engineering_path, "feature_engineering.joblib"
     )
     s3.download_file(bucket_name, classifier_path, "classifier.joblib")
-    logging.debug("Downloaded!")
+    logging.info("Downloaded!")
     feature_engineering = load("feature_engineering.joblib")
     classifier = load("classifier.joblib")
     return feature_engineering, classifier
