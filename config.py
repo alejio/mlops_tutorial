@@ -8,7 +8,7 @@ class Config:
     )
     LIVE_TAG = "live"
     CANDIDATE_TAG = "production_candidate"
-    BUCKET_NAME = "workshop-mlflow-artifacts"
+    BUCKET_NAME = "workshop-mlflow-artifacts"  # Update with your own!
     LOGGING = logging.INFO
     S3_DATA_DIR = "data"
     TRAIN_CSV = "train.csv"
