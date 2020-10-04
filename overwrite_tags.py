@@ -1,5 +1,4 @@
 import mlflow
-import click
 import logging
 from config import Config
 import typer

@@ -2,7 +2,6 @@ mlflow
 pandas
 pre-commit
 typer
-click
 numpy
 scikit-learn
 boto3
