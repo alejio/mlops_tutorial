@@ -1,24 +1,41 @@
 # mlops_tutorial
 
-## Clone repo
+## Initial setup
+Clone: `git clone git@github.com:alejio/mlops_tutorial.git`
 
-- `git clone .. `
-- #TODO! `pip install -r requirements_full.txt`
+Create virtual environment: `conda create --name mlops_tutorial python=3.8.5`
 
-## 0Ops:
+Activate virtual environment: `conda activate mlops_tutorial`
 
-### Deploy to heroku
+Install all dependencies: `pip install -r requirements.txt`
 
-Follow instructions https://devcenter.heroku.com/articles/container-registry-and-runtime
+## 0Ops
 
-- Log in to cli: `heroku login -i`
-- Log in to Container Registry: `heroku container:login`
-- Create app: `heroku-create`. Note the name!
-- Build image and push to Container Registry: `heroku container: push web`
-- Release image to app: `heroku container: release web`
-- Optionally open app in browser: `heroku open`
+In this section we will deploy the ML-powered application to the world without "Ops" of any kind.
 
-### Create Deploy action
+TODO: create app0
+
+### Milestone 1: Deploy app to heroku
+
+[See original instructions](https://devcenter.heroku.com/articles/container-registry-and-runtime)
+
+Steps:
+
+0. [Install heroku cli](https://devcenter.heroku.com/articles/heroku-cli)
+1. Log in to cli: `heroku login -i`
+2. Log in to Container Registry: `heroku container:login`
+3. Change 
+3. Create app: `heroku-create`. Take a note of the name of the created app!
+4. Build image and push to Container Registry: `heroku container: push web`
+5. Release image to app: `heroku container: release web`
+6. See app in browser: `heroku open`
+
+## AlmostOps: Start getting more serious
+TODO: create appAlmost
+
+### Milestone 2: Load artefacts from S3
+
+### Milestone 3: Enable CD with Github Actions
 
 This enables continuous deployment for the app with Github Actions, triggered on master branch push.
 

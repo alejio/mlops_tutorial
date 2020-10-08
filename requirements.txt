@@ -1,5 +1,13 @@
+#TODO: should be pinned
 joblib
-mlflow
 streamlit
 boto3
 scikit-learn
+mlflow
+typer
+pandas
+pre-commit
+numpy
+scikit-learn
+s3fs==0.3.0
+fsspec

@@ -1,8 +1,8 @@
 FROM python:3.8.5
 EXPOSE 8501
 WORKDIR /app
-COPY requirements.txt ./requirements.txt
-RUN pip3 install -r requirements.txt
+COPY requirements-app.txt ./requirements-app.txt
+RUN pip3 install -r requirements-app.txt
 COPY . .
 CMD streamlit run app.py --server.port $PORT
 
