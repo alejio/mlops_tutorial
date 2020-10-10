@@ -1,5 +1,30 @@
 # mlops_tutorial
 
+## Scope
+
+Application code and supporting 
+material for the [Codemotion 2020 workshop](https://events.codemotion.com/conferences/online/2020/codemotion-online-tech-conference/workshops/) titled "From 0Ops to MLOps" held on 22/10.
+
+The project focusses on incrementally improving the supporting MLOps infrastructure of a simple ML-powered application.
+
+Starting from the most basic config (0Ops), we gradually "decorate" the app with standard CI/CD workflows to arrive at a setup that enables basic ML auditability, reproducibility, and collaboration.
+
+In this project we take advantage of basic functionality of state-of-the-art tools such as:
+
+- [Streamlit](https://www.streamlit.io/), for easily creating a frontend for our app
+- [Heroku](https://www.heroku.com) for easily deploying our Streamlit app to the world
+- [MLflow (Tracking)](https://mlflow.org/docs/latest/tracking.html) for enabling ML artefact logging and experiment tracking
+- [AWS EC2](https://aws.amazon.com/ec2/) for hosting the MLflow server that logs details of our experiments
+- [AWS S3](https://aws.amazon.com/s3/) for storing the trained ML artefacts used by our application
+- [Github Actions](https://github.com/features/actions) for creating CI/CD workflows that combine everything together and achieving "MLOps"
+
+### Key learnings
+
+1. Established DevOps practices are not sufficient for ML and Data Science powered applications
+2. Experiment tracking is a central cog to an MLOps workflow. Many solutions exist, but MLflow is a nice starting point
+3. Github Actions provides lots of cool functionality for MLOps
+4. The Machine Learning Engineer role is vital - but don't expect to spend a lot of time doing model training
+
 ## Initial setup
 
 - Clone: `git clone git@github.com:alejio/mlops_tutorial.git`
