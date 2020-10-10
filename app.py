@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.info)
 
 @st.cache
 def load_artefacts():
+    # TODO: remove hardcode
     TRACKING_URI = (
         "http://testuser:test@ec2-3-9-174-162.eu-west-2.compute.amazonaws.com"
     )

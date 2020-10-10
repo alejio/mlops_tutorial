@@ -3,6 +3,7 @@ import logging
 
 class Config:
     EXPERIMENT_ID = "2"
+    # TODO: remove hardcode
     TRACKING_URI = (
         "http://testuser:test@ec2-3-9-174-162.eu-west-2.compute.amazonaws.com"
     )
