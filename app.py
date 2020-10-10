@@ -45,7 +45,7 @@ def load_artefacts():
 
 st.title("Predicting movie review sentiment")
 st.info(
-    "Based on an example in [awesome-streamlit](https://github.com/MarcSkovMadsen/awesome-streamlit) "
+    "Based on an example in [awesome-streamlit](https://github.com/MarcSkovMadsen/awesome-streamlit)"
     "by [Marc Skov Madsen](https://github.com/MarcSkovMadsen), "
     "who took it from [Paras Patidar](https://github.com/patidarparas13/Sentiment-Analyzer-Tool). \n\n"
     "Cheers both!\n\n"

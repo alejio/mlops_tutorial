@@ -2,8 +2,7 @@
 
 ## Scope
 
-Application code and supporting 
-material for the [Codemotion 2020 workshop](https://events.codemotion.com/conferences/online/2020/codemotion-online-tech-conference/workshops/) titled "From 0Ops to MLOps" held on 22/10.
+Application code and supporting material for the [Codemotion 2020 workshop](https://events.codemotion.com/conferences/online/2020/codemotion-online-tech-conference/workshops/) titled "From 0Ops to MLOps" held on 22/10.
 
 The project focusses on incrementally improving the supporting MLOps infrastructure of a simple ML-powered application.
 
@@ -38,6 +37,12 @@ In this project we take advantage of basic functionality of state-of-the-art too
 ## 0Ops
 
 In this section we will deploy the ML-powered application to the world without "Ops" of any kind.
+
+### Note: Streamlit app
+
+For the purposes of this tutorial we will use a very simple application that uses an ML model to predict the sentiment of a user-provided movie review.
+
+The application itself is a slightly modified version of the `galleries/sentiment_analyzer` example Streamlit app found here awesome-streamlit](https://github.com/MarcSkovMadsen/awesome-streamlit).
 
 ### Milestone 1: Deploy app to heroku
 
