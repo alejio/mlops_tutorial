@@ -2,10 +2,13 @@
 
 ## Initial setup
 
-> Clone: `git clone git@github.com:alejio/mlops_tutorial.git`
-> Create virtual environment: `conda create --name mlops_tutorial python=3.8.5`
-> Activate virtual environment: `conda activate mlops_tutorial`
-> Install all dependencies: `pip install -r requirements.txt`
+- Clone: `git clone git@github.com:alejio/mlops_tutorial.git`
+
+- Create virtual environment: `conda create --name mlops_tutorial python=3.8.5`
+
+- Activate virtual environment: `conda activate mlops_tutorial`
+
+- Install all dependencies: `pip install -r requirements.txt`
 
 ## 0Ops
 
@@ -66,6 +69,7 @@ Finally, we use Github Actions to create a better pull request workflow for upda
 1. "Decorate" training script with MLflow logging functionality
 2. Run training and check MLflow and S3 for new artefacts
 3. Update `app.py` to pick the right model S3 artefact using queries to MLflow server  
+4. Push to master and check if it's working!
 
 ### Milestone 6: Enable Github Actions for PR workflow
 
