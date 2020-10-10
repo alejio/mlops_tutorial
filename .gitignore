@@ -3,3 +3,5 @@
 *.joblib
 .ipynb_checkpoints
 .vscode/*
+__pycache__
+.vscode/launch.json
