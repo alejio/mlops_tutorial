@@ -6,7 +6,7 @@ Application code and supporting material for the [Codemotion 2020 workshop](http
 
 The project focusses on incrementally improving the supporting MLOps infrastructure of a simple ML-powered application.
 
-Starting from the most basic config (0Ops), we gradually "decorate" the app with standard CI/CD workflows to arrive at a setup that enables basic ML auditability, reproducibility, and collaboration.
+Starting from the most basic config (0Ops), we gradually "decorate" the app over a series of **Milestones** with standard CI/CD workflows to arrive at a setup that enables basic ML auditability, reproducibility, and collaboration.
 
 In this project we take advantage of basic functionality of state-of-the-art tools such as:
 
