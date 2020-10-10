@@ -27,13 +27,13 @@ In this project we take advantage of basic functionality of state-of-the-art too
 
 ## Initial setup
 
-- Clone: `git clone git@github.com:alejio/mlops_tutorial.git`
+- [x] Clone: `git clone git@github.com:alejio/mlops_tutorial.git`
 
-- Create virtual environment: `conda create --name mlops_tutorial python=3.8.5`
+- [x] Create virtual environment: `conda create --name mlops_tutorial python=3.8.5`
 
-- Activate virtual environment: `conda activate mlops_tutorial`
+- [x] Activate virtual environment: `conda activate mlops_tutorial`
 
-- Install all dependencies: `pip install -r requirements.txt`
+- [x] Install all dependencies: `pip install -r requirements.txt`
 
 ## 0Ops
 
