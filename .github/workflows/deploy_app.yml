@@ -17,6 +17,7 @@ jobs:
                 usedocker: true
               env: 
                 ARTIFACT_LOCATION: "local"
+                MLFLOW_TRACKING_URI: ${{secrets.MLFLOW_TRACKING_URI}}
 
 # https://github.com/marketplace/actions/deploy-to-heroku
                 
