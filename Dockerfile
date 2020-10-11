@@ -4,7 +4,7 @@ WORKDIR /app
 COPY requirements-app.txt ./requirements-app.txt
 RUN pip3 install -r requirements-app.txt
 COPY . .
-CMD streamlit run app.py --server.port $PORT
+CMD streamlit run app.py $ARTIFACT_LOCATION --server.port $PORT
 
 # streamlit-specific commands for config
 ENV LC_ALL=C.UTF-8

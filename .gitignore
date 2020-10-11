@@ -1,7 +1,7 @@
 .vscode
 .vscode/settings.json
-*.joblib
 .ipynb_checkpoints
 .vscode/*
 __pycache__
 .vscode/launch.json
+artifacts_s3/*

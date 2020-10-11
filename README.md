@@ -12,10 +12,12 @@ In this project we take advantage of basic functionality of state-of-the-art too
 
 - [Streamlit](https://www.streamlit.io/), for easily creating a frontend for our app
 - [Heroku](https://www.heroku.com) for easily deploying our Streamlit app to the world
-- [MLflow (Tracking)](https://mlflow.org/docs/latest/tracking.html) for enabling ML artefact logging and experiment tracking
+- [MLflow (Tracking)](https://mlflow.org/docs/latest/tracking.html) for enabling ML artifact logging and experiment tracking
 - [AWS EC2](https://aws.amazon.com/ec2/) for hosting the MLflow server that logs details of our experiments
-- [AWS S3](https://aws.amazon.com/s3/) for storing the trained ML artefacts used by our application
+- [AWS S3](https://aws.amazon.com/s3/) for storing the trained ML artifacts used by our application
 - [Github Actions](https://github.com/features/actions) for creating CI/CD workflows that combine everything together and achieving "MLOps"
+
+> TODO: Link to app
 
 ### Key learnings
 
@@ -60,9 +62,9 @@ Steps:
 
 ## AlmostOps: Start getting more serious
 
-In this section, we will enable loading of artefacts from S3, and enable Continuous Deployment of the application, using a Github Action triggered upon any push to master.
+In this section, we will enable loading of artifacts from S3, and enable Continuous Deployment of the application, using a Github Action triggered upon any push to master.
 
-### Milestone 2: Load artefacts from S3
+### Milestone 2: Load artifacts from S3
 
 - Create a public S3 bucket and a directory `data`
 - Update the S3 bucket name in config.py
@@ -74,7 +76,7 @@ In this section, we will enable loading of artefacts from S3, and enable Continu
 This enables continuous deployment for the app with Github Actions, triggered on master branch push.
 
 - Create secrets: `HEROKU_API_KEY` and `HEROKU_APP_NAME`
-- Rename `deploy_app.yolo` to `deploy_app.yml` in `.github/workflows/`
+- Rename `deploy_app.disabled` to `deploy_app.yml` in `.github/workflows/`
 - Commit and push!
 
 ## MLOps-ready
@@ -90,18 +92,20 @@ Finally, we use Github Actions to create a better pull request workflow for upda
 3. Configure nginx
 4. Create Github secrets `MLFLOW_TRACKING_PASSWORD`, `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`
 
-(TODO: figure out what I have to do with IAM roles)
-(TODO: for EC2 consider using a CloudFormation script)
-(TODO: consider using a `python mlflow_setup.py`)
+> (TODO: figure out what I have to do with IAM roles)
 
-### Milestone 5: MLflow instrumentation of application
+> (TODO: for EC2 consider using a CloudFormation script)
+
+> (TODO: consider using a `python mlflow_setup.py`)
+
+### Milestone 5: Instrument application with MLflow
 
 1. "Decorate" training script with MLflow logging functionality
-2. Run training and check MLflow and S3 for new artefacts
-3. Update `app.py` to pick the right model S3 artefact using queries to MLflow server  
+2. Run training and check MLflow and S3 for new artifacts
+3. Update `app.py` to pick the right model S3 artifact using queries to MLflow server  
 4. Push to master and check if it's working!
 
-### Milestone 6: Enable Github Actions for PR workflow
+### Milestone 6: Embed MLOps to pull requests
 
 Some setup first:
 
@@ -114,5 +118,6 @@ Some setup first:
 
 ## All set
 
-TODO: rename master branch to main
-TODO: MLOPS_TUTORIAL_TOKEN??
+> TODO: rename master branch to main
+
+> TODO: MLOPS_TUTORIAL_TOKEN??

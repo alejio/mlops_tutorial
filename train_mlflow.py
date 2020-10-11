@@ -10,17 +10,19 @@ import typer
 import boto3
 import logging
 from config import Config
+from typing import Dict
+
 
 logging.basicConfig(level=Config.LOGGING)
 
 
 def download_and_load_data(
     bucket_name: str, directory: str, train_csv: str, test_csv: str
-):
+) -> Dict:
 
     s3 = boto3.client("s3")
     bucket_name = bucket_name
-
+    # TODO: pandas read directly from s3
     logging.info("Start downloading training and test data from S3...")
     s3.download_file(bucket_name, f"{directory}/{train_csv}", train_csv)
     s3.download_file(bucket_name, f"{directory}/{test_csv}", test_csv)

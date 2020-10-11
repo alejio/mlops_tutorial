@@ -3,3 +3,5 @@ mlflow
 streamlit
 boto3
 scikit-learn
+typer
+numpy

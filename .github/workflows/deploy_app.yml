@@ -15,6 +15,7 @@ jobs:
                 heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
                 heroku_email: "ge02040@hotmail.com"
                 usedocker: true
+              env: ARTIFACT_LOCATION: "local"
 
 # https://github.com/marketplace/actions/deploy-to-heroku
                 

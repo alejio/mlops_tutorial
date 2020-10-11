@@ -2,19 +2,16 @@ import mlflow
 import logging
 from config import Config
 import typer
+from utils import get_mlflow_run
 
 
 logging.basicConfig(level=Config.LOGGING)
 
 
 def fetch_live_model_id():
-    mlflow.set_tracking_uri(Config.TRACKING_URI)
-    runs = mlflow.search_runs(
-        experiment_ids=[Config.EXPERIMENT_ID],
-        filter_string=f"tags.{Config.LIVE_TAG}='1'",
-    ).iloc[0]
-    logging.info(runs["run_id"])
-    print(runs["run_id"])
+    run_id = get_mlflow_run(Config.TRACKING_URI, Config.EXPERIMENT_ID, Config.LIVE_TAG)
+    logging.info(f"Live model run_id is: {run_id}")
+    print(run_id)
 
 
 if __name__ == "__main__":
