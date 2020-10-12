@@ -5,3 +5,4 @@
 __pycache__
 .vscode/launch.json
 artifacts_s3/*
+mlruns
