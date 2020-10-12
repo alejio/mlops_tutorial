@@ -15,9 +15,11 @@ jobs:
                 heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
                 heroku_email: "ge02040@hotmail.com"
                 usedocker: true
+                docker_build_args: |
+                  MLFLOW_TRACKING_URI
               env: 
                 ARTIFACT_LOCATION: "local"
-                MLFLOW_TRACKING_URI: ${{secrets.MLFLOW_TRACKING_URI}}
+                MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
 # https://github.com/marketplace/actions/deploy-to-heroku
-                
+# Heroku Docker deploymenthttps://devcenter.heroku.com/articles/container-registry-and-runtime
