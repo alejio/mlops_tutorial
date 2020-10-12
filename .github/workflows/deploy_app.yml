@@ -18,7 +18,7 @@ jobs:
                 docker_build_args: |
                   MLFLOW_TRACKING_URI
               env: 
-                MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
+                MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
 
 # https://github.com/marketplace/actions/deploy-to-heroku
-# Heroku Docker deploymenthttps://devcenter.heroku.com/articles/container-registry-and-runtime
+# Heroku Docker deployment https://devcenter.heroku.com/articles/container-registry-and-runtime
