@@ -27,17 +27,23 @@ def download_artifacts_from_s3(bucket_name: str, s3_path: str, local_path: str) 
     logging.info(f"Bucket Name: {Config.BUCKET_NAME}")
     logging.info(f"Artifact path: {s3_path}")
     feature_engineering_path = f"{s3_path}/{Config.FEATURE_ENGINEERING_ARTIFACT}"
+    logging.info(f"Feature engineering path: {feature_engineering_path}")
     classifier_path = f"{s3_path}/{Config.CLASSIFIER_ARTIFACT}"
+    logging.info(f"Classifier path: {classifier_path}")
     s3 = boto3.client("s3")
     logging.info("Download start")
+    feature_engineering_local_path = (
+        f"{local_path}/{Config.FEATURE_ENGINEERING_ARTIFACT}"
+    )
+    logging.info(f"Feature engineering local path: {feature_engineering_local_path}")
+    classifier_local_path = f"{local_path}/{Config.CLASSIFIER_ARTIFACT}"
+    logging.info(f"Classifier local path: {classifier_local_path}")
     s3.download_file(
         Config.BUCKET_NAME,
         feature_engineering_path,
-        f"{local_path}/{Config.FEATURE_ENGINEERING_ARTIFACT}",
+        feature_engineering_local_path,
     )
-    s3.download_file(
-        bucket_name, classifier_path, f"{local_path}/{Config.CLASSIFIER_ARTIFACT}"
-    )
+    s3.download_file(bucket_name, classifier_path, classifier_local_path)
     logging.info("Downloaded!")
 
 
