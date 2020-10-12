@@ -60,7 +60,7 @@ jobs:
 
         # Run mlflow train job
       - name: Run train job
-        run: python train_mlflow.py
+        run: python train_mlflow.py s3_mlflow
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

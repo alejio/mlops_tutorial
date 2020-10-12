@@ -23,6 +23,10 @@ def get_s3_path(experiment_name: str, run_id: str) -> str:
     return f"{experiment_name}/{run_id}/artifacts"
 
 
+def get_full_s3_path(bucket_name: str, directory: str, fname: str) -> str:
+    return f"s3://{bucket_name}/{directory}/{fname}"
+
+
 def download_artifacts_from_s3(bucket_name: str, s3_path: str, local_path: str) -> None:
     logging.info(f"Bucket Name: {Config.BUCKET_NAME}")
     logging.info(f"Artifact path: {s3_path}")

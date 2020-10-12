@@ -9,7 +9,7 @@ import traceback
 import sys
 from utils import load_artifacts
 
-logging.basicConfig(level=logging.info)
+logging.basicConfig(level=Config.LOGGING)
 
 
 def app(artifact_location: str) -> None:
