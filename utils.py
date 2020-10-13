@@ -2,9 +2,10 @@ import mlflow
 import logging
 from config import Config, ArtifactLocation
 import boto3
-from typing import Tuple
+from typing import Tuple, Optional, Dict
 import os.path
 from joblib import load
+import pandas as pd
 
 
 def get_mlflow_run(tracking_uri: str, experiment_id: str, live_tag: str) -> str:
@@ -62,15 +63,13 @@ def load_artifacts(artifact_location: ArtifactLocation) -> Tuple:
             )
             s3_path = get_s3_path(Config.EXPERIMENT_NAME, run_id)
         download_artifacts_from_s3(
-            Config.BUCKET_NAME, s3_path, Config.LOCAL_ARTIFACTS_PATH_FROM_S3
+            Config.BUCKET_NAME, s3_path, Config.LOCAL_ARTIFACTS_PATH
         )
 
     feature_engineering_path = (
-        f"{Config.LOCAL_ARTIFACTS_PATH_FROM_S3}/{Config.FEATURE_ENGINEERING_ARTIFACT}"
+        f"{Config.LOCAL_ARTIFACTS_PATH}/{Config.FEATURE_ENGINEERING_ARTIFACT}"
     )
-    classifier_path = (
-        f"{Config.LOCAL_ARTIFACTS_PATH_FROM_S3}/{Config.CLASSIFIER_ARTIFACT}"
-    )
+    classifier_path = f"{Config.LOCAL_ARTIFACTS_PATH}/{Config.CLASSIFIER_ARTIFACT}"
     assert os.path.isfile(
         feature_engineering_path
     ), "Feature engineering artifact not available!"
@@ -80,3 +79,42 @@ def load_artifacts(artifact_location: ArtifactLocation) -> Tuple:
     classifier = load(classifier_path)
 
     return feature_engineering, classifier
+
+
+def load_csv_to_pandas(
+    artifact_location: ArtifactLocation,
+    bucket_name: Optional[str],
+    directory: Optional[str],
+    train_csv: str,
+    test_csv: str,
+):
+    if artifact_location == ArtifactLocation.LOCAL:
+        path_train = f"data/{train_csv}"
+        path_test = f"data/{test_csv}"
+    else:
+        path_train = get_full_s3_path(bucket_name, Config.S3_DATA_DIR, train_csv)
+        path_test = get_full_s3_path(bucket_name, Config.S3_DATA_DIR, test_csv)
+    train = pd.read_csv(path_train, names=["review", "sentiment"])
+    test = pd.read_csv(path_test, names=["review", "sentiment"])
+    return train, test
+
+
+def load_and_preprocess_data(artifact_location: ArtifactLocation) -> Dict:
+    train, test = load_csv_to_pandas(
+        artifact_location,
+        Config.BUCKET_NAME,
+        Config.S3_DATA_DIR,
+        Config.TRAIN_CSV,
+        Config.TEST_CSV,
+    )
+
+    X_raw_train = train["review"]
+    X_raw_test = test["review"]
+    y_train = train["sentiment"]
+    y_test = test["sentiment"]
+    return {
+        "X_raw_train": X_raw_train,
+        "X_raw_test": X_raw_test,
+        "y_train": y_train,
+        "y_test": y_test,
+    }

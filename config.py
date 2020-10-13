@@ -18,7 +18,6 @@ class Config:
     FEATURE_ENGINEERING_ARTIFACT = "feature_engineering.joblib"
     CLASSIFIER_ARTIFACT = "classifier.joblib"
     LOCAL_ARTIFACTS_PATH = "artifacts"
-    LOCAL_ARTIFACTS_PATH_FROM_S3 = "artifacts_s3"
 
 
 class ArtifactLocation(Enum):
