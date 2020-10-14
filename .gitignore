@@ -9,3 +9,4 @@ artifacts_s3/feature_engineering.joblib
 mlruns
 classifier.joblib
 feature_engineering.joblib
+*pem

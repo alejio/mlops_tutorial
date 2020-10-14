@@ -86,24 +86,49 @@ In the final section, we enable model training through a CI/CD Github Actions fl
 Finally, we use Github Actions to create a better pull request workflow for updating trained models.
 
 ### Milestone 4: Set up MLflow
-
 1. Launch EC2 instance
-2. Install MLflow
+    - Create IAM role EC2 with S3 access
+    - Amazon Linux AMI 2018.03.0 (HVM), SSD Volume Type - ami-0765d48d7e15beb93
+    - In configure instance specify the IAM role you created
+    - In security group create:
+        - HTTP: source 0.0.0.0/0, ::/0
+        - SSH: source 0.0.0.0/0
+    - Create key/value pair and save pem file to the repo directory (it is gitignored)
+    - Run `chmod 400 <your_key>.pem`
+2. Install MLflow on EC2
+    - From [link](https://medium.com/@alexanderneshitov/how-to-run-an-mlflow-tracking-server-on-aws-ec2-d7afd0ac8008)
+    - From repo directory ssh into EC2 instance: `ssh -i "<your_key>.pem" ec2-user@ec2<your-instance>`
+    - Install MLflow: `sudo pip install mlflow`
+    - Downgrade dateutil (LOL): `sudo pip install -U python-dateutil==2.6.1`
+    - Install boto3: `sudo pip install boto3`
 3. Configure nginx
-4. Create Github secrets `MLFLOW_TRACKING_PASSWORD`, `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`
-
-> (TODO: figure out what I have to do with IAM roles)
-
-> (TODO: for EC2 consider using a CloudFormation script)
-
-> (TODO: consider using a `python mlflow_setup.py`)
+    - Install nginx: `sudo yum install nginx`
+    - Start nginx: `sudo service nginx start`
+    - Install httpd tools to allow password protection: `sudo yum install httpd-tools`
+    - Create password for user testuser: `sudo htpasswd -c /etc/nginx/.htpasswd testuser`
+    - Enable global read/write permissions to nginx directory: `sudo chmod 777 /etc/nginx`
+    - Delete nginx.conf so we replace it with a modified one: `rm /etc/nginx/nginx.conf`
+    - Open new terminal window and upload the nginx.conf file in this repo to EC2: `scp -i <your_key>.pem nginx.conf ec2-user@ec2<your-instance>:/etc/nginx/`
+    - Reload nginx: `sudo service nginx reload`
+4. Run MLflow server
+    - Start the server: `mlflow server --default-artifact-root s3://<your-s3-bucket> --host 0.0.0.0`
+    - Check it out! Open browser and go to your instance.
 
 ### Milestone 5: Instrument application with MLflow
 
-1. "Decorate" training script with MLflow logging functionality
-2. Run training and check MLflow and S3 for new artifacts
-3. Update `app.py` to pick the right model S3 artifact using queries to MLflow server  
-4. Push to master and check if it's working!
+1. Configure application to communicate with MLflow server
+    - `export MLFLOW_TRACKING_URI=http://testuser:<your_password>@ec2-<your_instance>`
+    - Run `mlflow_setup.py` and note your experiment_id
+    - Copy your experiment_id to `config.py`
+    - Run an initial experiment to create your first live model: `python train.py s3_mlflow --production-ready`
+    - Check your MLflow server (refresh page) and be excited!
+2. Run the streamlit app with MLflow artefacts locally: `streamlit run app.py s3_mlflow`
+3. Create Github secrets
+    - `MLFLOW_TRACKING_PASSWORD`
+    - `MLFLOW_TRACKING_URI`
+    - `MLFLOW_TRACKING_USERNAME`
+4. In Dockerfile set `ARTIFACT_LOCATION=s3_mlflow`
+5. Push to master, wait for the deployment and check out app.
 
 ### Milestone 6: Embed MLOps to pull requests
 
