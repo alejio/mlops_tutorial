@@ -4,8 +4,8 @@ import os
 
 
 class Config:
-    EXPERIMENT_ID = "4"
-    EXPERIMENT_NAME = "predict_sentiment_v4"
+    EXPERIMENT_ID = "2"
+    EXPERIMENT_NAME = "predict_sentiment"
     TRACKING_URI = os.environ["MLFLOW_TRACKING_URI"]  # Set as environment variable
     LIVE_TAG = "live"
     CANDIDATE_TAG = "production_candidate"
