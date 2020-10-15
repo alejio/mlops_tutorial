@@ -1,11 +1,13 @@
-import mlflow
 import logging
-from config import Config, ArtifactLocation
-import boto3
-from typing import Tuple, Optional, Dict
 import os.path
-from joblib import load
+from typing import Tuple, Optional, Dict
+
+import boto3
+import mlflow
 import pandas as pd
+from joblib import load
+
+from config import Config, ArtifactLocation
 
 
 def get_mlflow_run(tracking_uri: str, experiment_id: str, live_tag: str) -> str:

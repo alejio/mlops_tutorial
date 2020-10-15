@@ -1,18 +1,17 @@
-import pandas as pd
-import numpy as np
+import logging
 import os
-from sklearn.naive_bayes import BernoulliNB
+from typing import Dict
+
+import boto3
+import mlflow
+import typer
+from joblib import dump
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import accuracy_score
-import mlflow
-from joblib import dump
-import typer
-import boto3
-import logging
-from config import Config, ArtifactLocation
-from typing import Dict, Optional
-from utils import get_full_s3_path, load_and_preprocess_data
+from sklearn.naive_bayes import BernoulliNB
 
+from config import Config, ArtifactLocation
+from utils import load_and_preprocess_data
 
 logging.basicConfig(level=Config.LOGGING)
 

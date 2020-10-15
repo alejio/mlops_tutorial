@@ -95,12 +95,14 @@ Finally, we use Github Actions to create a better pull request workflow for upda
         - SSH: source 0.0.0.0/0
     - Create key/value pair and save pem file to the repo directory (it is gitignored)
     - Run `chmod 400 <your_key>.pem`
+    
 2. Install MLflow on EC2
     - From [link](https://medium.com/@alexanderneshitov/how-to-run-an-mlflow-tracking-server-on-aws-ec2-d7afd0ac8008)
     - From repo directory ssh into EC2 instance: `ssh -i "<your_key>.pem" ec2-user@ec2<your-instance>`
     - Install MLflow: `sudo pip install mlflow`
     - Downgrade dateutil (LOL): `sudo pip install -U python-dateutil==2.6.1`
     - Install boto3: `sudo pip install boto3`
+    
 3. Configure nginx
     - Install nginx: `sudo yum install nginx`
     - Start nginx: `sudo service nginx start`
@@ -110,6 +112,7 @@ Finally, we use Github Actions to create a better pull request workflow for upda
     - Delete nginx.conf so we replace it with a modified one: `rm /etc/nginx/nginx.conf`
     - Open new terminal window and upload the nginx.conf file in this repo to EC2: `scp -i <your_key>.pem nginx.conf ec2-user@ec2<your-instance>:/etc/nginx/`
     - Reload nginx: `sudo service nginx reload`
+    
 4. Run MLflow server
     - Start the server: `mlflow server --default-artifact-root s3://<your-s3-bucket> --host 0.0.0.0`
     - Check it out! Open browser and go to your instance.
@@ -134,14 +137,26 @@ Finally, we use Github Actions to create a better pull request workflow for upda
 
 Some setup first:
 
-- Github Settings -> Developer settings -> New Github App
-- Give it a name and the repo URL
-- Generate and set a private key 
-- Permissions: all repo permissions read-only, except for content references (none), read & write for Deployments, Pull Requests, Workflows. #TODO!
-- Install app to your account and give access to the repository
-- Add secrets for Github app: `APP_ID`, `APP_PEM`
-
-## All set
+1. Create a Github app for enabling a specific Actions step:
+    - Github Settings -> Developer settings -> New Github App
+    - Give it a name and the repo URL
+    - Generate and set a private key 
+    - Set permissions: all repo permissions read-only, except for content references (none), read & write for Deployments, Pull Requests, Workflows. #TODO!
+    - Install app to your account and give access to the repository
+    - Add secrets for Github app: `APP_ID`, `APP_PEM`
+    
+2. Enable Actions
+    - Rename `deploy_app.disabled` to `deploy_app.yml`
+    - Rename `evaluate.disabled` to `evaluate.yml`
+    
+3. See the workflow in action!
+    - Create a new branch: `git checkout -b test-ml-pr`
+    - Update a model config param
+    - Create a PR
+    - Enter `/evaluate` in the PR chat and see magic happening
+    - Enter `/deploy-candidate` in the PR chat and wait for magic to happen
+    - Merge PR to redeploy app
+    - Wait for the action to complete and checkout the app
 
 > TODO: rename master branch to main
 

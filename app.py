@@ -1,12 +1,11 @@
+import logging
+from typing import Tuple
+
 import numpy as np
 import streamlit as st
-import os.path
-import logging
 import typer
-from typing import Tuple
+
 from config import Config, ArtifactLocation
-import traceback
-import sys
 from utils import load_artifacts
 
 logging.basicConfig(level=Config.LOGGING)
