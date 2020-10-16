@@ -110,6 +110,10 @@ def train(artifact_location: str, production_ready: bool = False) -> None:
             else:
                 mlflow.set_tag(Config.LIVE_TAG, 0)
 
+            # When running in Github actions set EXPERIMENT_ID as env
+            # for consumption by the subsequent step
+            print(f"::set-output name=EXPERIMENT_ID::{Config.EXPERIMENT_ID}")
+
 
 if __name__ == "__main__":
     typer.run(train)
