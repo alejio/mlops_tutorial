@@ -64,7 +64,7 @@ jobs:
         id: fetch-runs
         with:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-          EXPERIMENT_ID: "2"
+          EXPERIMENT_ID: ${{ steps.trainjob.outputs.EXPERIMENT_ID }}
           BASELINE_RUN_QUERY: "tags.live='1'"
           CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
 
