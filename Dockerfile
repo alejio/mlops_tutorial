@@ -4,8 +4,15 @@ WORKDIR /app
 COPY requirements-app.txt ./requirements-app.txt
 RUN pip3 install -r requirements-app.txt
 COPY . .
+# make sure to set env variables in your environment
+# for local do
+# `export $(cat .env | xargs)`
 ARG MLFLOW_TRACKING_URI
 ENV MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
+ARG AWS_ACCESS_KEY_ID
+ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 ENV ARTIFACT_LOCATION='s3_mlflow'
 # Need to provide build arg to set env variable from host env variable:
 # https://vsupalov.com/docker-build-pass-environment-variables/
