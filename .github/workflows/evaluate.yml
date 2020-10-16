@@ -9,12 +9,9 @@ jobs:
       - name: ChatOps For Pull Requests
         uses: machine-learning-apps/actions-chatops@1.41
         with:
-          APP_PEM: ${{ secrets.APP_PEM }}
-          APP_ID: ${{ secrets.APP_ID }}
           TRIGGER_PHRASE: "/evaluate"
-          INDICATOR_LABEL: "evaluation-started"
         env:
-          GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: prcomm
 
       - name: Get PR number
@@ -30,6 +27,12 @@ jobs:
             })
             return pulls[0].number
           result-encoding: string
+
+      - name: Add evaluation-started label
+        uses: actions-ecosystem/action-add-labels@v1.1.0
+        with:
+          github_token: ${{ secrets.github_token }}
+          labels: "evaluation-started"
 
       - name: Create Comment
         uses: peter-evans/create-or-update-comment@v1.4.2
