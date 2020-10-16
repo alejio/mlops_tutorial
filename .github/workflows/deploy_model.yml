@@ -9,46 +9,48 @@ jobs:
       - name: ChatOps For Pull Requests
         uses: machine-learning-apps/actions-chatops@1.41
         with:
-          APP_PEM: ${{ secrets.APP_PEM }}
-          APP_ID: ${{ secrets.APP_ID }}
           TRIGGER_PHRASE: "/deploy-candidate"
-          INDICATOR_LABEL: "evaluation-complete"
         env:
-          GITHUB_TOKEN: ${{ secrets.MLOPS_TUTORIAL_TOKEN }}
-        id: prcomm3
-      
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: prcomm
+
       - name: Remove evaluation-started label
         uses: actions-ecosystem/action-remove-labels@v1.0.0
         with:
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "evaluation-started"
+
+      - name: Add evaluation-complete label
+        uses: actions-ecosystem/action-add-labels@v1.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: "evaluation-complete"
 
       # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
       - name: clone branch of PR
-        if: steps.prcomm3.outputs.BOOL_TRIGGERED == 'true'
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/checkout@v2.3.2
         with:
-          ref: ${{ steps.prcomm3.outputs.SHA }}
+          ref: ${{ steps.prcomm.outputs.SHA }}
 
       # Set up Python
       - name: Set up Python v3.8.5
-        if: steps.prcomm3.outputs.BOOL_TRIGGERED == 'true'
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/setup-python@v2
         with:
           python-version: '3.8.5'
 
-        # Install dependencies
-      - name: Install dependencies
+      - name: Set experiment_id
+        id: experimentid-setter
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-cli.txt
+          python print_experiment_id_for_actions.py
 
       - name: Fetch runs
         uses: alejio/mlflow-tracking-action@v1.1.0
         id: fetch-runs
         with:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-          EXPERIMENT_ID: "2"
+          EXPERIMENT_ID: ${{ steps.experimentid-setter.outputs.EXPERIMENT_ID}}
           BASELINE_RUN_QUERY: "tags.live='1'"
           CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
 
@@ -66,7 +68,7 @@ jobs:
             return pulls[0].number
           result-encoding: string
 
-      - name: Create Comment
+      - name: Create deploy intent comment
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
           issue-number: ${{ steps.get-pr-number.outputs.result }}
@@ -74,7 +76,10 @@ jobs:
             I'm deploying the candidate model with run ID [${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ steps.fetch-runs.outputs.EXPERIMENT_ID }}/runs/${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}) to production.
       
       - name: Overwrite MLFlow run tags
-        run: python overwrite_tags.py ${{ steps.fetch-runs.outputs.BASELINE_RUNID }} ${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-cli.txt
+          python overwrite_tags.py ${{ steps.fetch-runs.outputs.BASELINE_RUNID }} ${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}
 
       - name: Query deployed model 
         run: |
