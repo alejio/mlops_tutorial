@@ -10,7 +10,6 @@ ENV ARTIFACT_LOCATION='s3_mlflow'
 # https://vsupalov.com/docker-build-pass-environment-variables/
 CMD python train.py $ARTIFACT_LOCATION 
 
-# docker build --build-arg MLFLOW_TRACKING_URI -t -f train.Dockerfile mlops_tutorial_train
+# docker build --build-arg MLFLOW_TRACKING_URI -f train.Dockerfile -t mlops_tutorial_train .
 
-# docker run -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID 
-#   -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -it mlops_tutorial_train
+# docker run -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -it mlops_tutorial_train

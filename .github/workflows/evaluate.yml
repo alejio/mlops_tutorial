@@ -48,25 +48,15 @@ jobs:
         with:
           ref: ${{ steps.prcomm.outputs.SHA }}
 
-      # Set up Python
-      - name: Set up Python v3.8.5
-        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8.5'
-
-        # Install dependencies
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-dev.txt
-
         # Run mlflow train job
       - name: Run train job
-        run: python train.py s3_mlflow
+        run: |
+          docker build --build-arg MLFLOW_TRACKING_URI -f train.Dockerfile -t mlops_tutorial_train .
+          docker run -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -it mlops_tutorial_train
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          MLFLOW_TRACKING_URI : ${{ secrets.MLFLOW_TRACKING_URI }}
         id: trainjob
 
       - name: Fetch runs
