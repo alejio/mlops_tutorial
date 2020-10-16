@@ -21,8 +21,8 @@ jobs:
                   AWS_SECRET_ACCESS_KEY
               env:
                 MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-                AWS_ACCESS_KEY_ID: ${{secrets. AWS_ACCESS_KEY_ID}}
-                AWS_SECRET_ACCESS_KEY: ${{secrets. AWS_ACCESS_KEY_ID}}
+                AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+                AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_ACCESS_KEY_ID}}
 
 # https://github.com/marketplace/actions/deploy-to-heroku
 # Heroku Docker deployment https://devcenter.heroku.com/articles/container-registry-and-runtime
