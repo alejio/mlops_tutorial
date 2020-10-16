@@ -6,7 +6,8 @@ RUN pip3 install -r requirements-app.txt
 COPY . .
 # make sure to set env variables in your environment
 # for local do
-# `export $(cat .env | xargs)`
+# `source .env`
+# for direct heroku deployment provide the args to
 ARG MLFLOW_TRACKING_URI
 ENV MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
 ARG AWS_ACCESS_KEY_ID
@@ -32,7 +33,6 @@ RUN bash -c 'echo -e "\
 enableCORS = false\n\
 " > /root/.streamlit/config.toml'
 
-# docker build --build-arg MLFLOW_TRACKING_URI -t mlops_tutorial.
+# docker build --build-arg MLFLOW_TRACKING_URI --build-arg AWS_ACCESS_KEY_ID --build-arg AWS_SECRET_ACCESS_KEY -f Dockerfile -t mlops_tutorial .
 
-# docker run -e PORT=8501 -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID 
-#   -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -it mlops_tutorial
+# docker run -e PORT=8501 -it mlops_tutorial

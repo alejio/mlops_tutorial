@@ -127,9 +127,7 @@ Finally, we use Github Actions to create a better pull request workflow for upda
     - Check your MLflow server (refresh page) and be excited!
 2. Run the streamlit app with MLflow artefacts locally: `streamlit run app.py s3_mlflow`
 3. Create Github secrets
-    - `MLFLOW_TRACKING_PASSWORD`
-    - `MLFLOW_TRACKING_URI`
-    - `MLFLOW_TRACKING_USERNAME`
+    - `MLFLOW_TRACKING_URI`: use format "http://testuser:<your_ec2_password>@ec2-<your_instance>"
 4. In Dockerfile set `ARTIFACT_LOCATION=s3_mlflow`
 5. Push to master, wait for the deployment and check out app.
 
