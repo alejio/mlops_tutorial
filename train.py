@@ -109,6 +109,7 @@ def train(artifact_location: str, production_ready: bool = False) -> None:
                 mlflow.set_tag(Config.LIVE_TAG, 1)
             else:
                 mlflow.set_tag(Config.LIVE_TAG, 0)
+                mlflow.set_tag(Config.CANDIDATE_TAG, 1)
 
 
 if __name__ == "__main__":
