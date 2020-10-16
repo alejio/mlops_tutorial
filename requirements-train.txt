@@ -1,0 +1,9 @@
+joblib
+boto3
+scikit-learn
+mlflow
+typer
+pandas
+numpy
+s3fs==0.3.0
+fsspec

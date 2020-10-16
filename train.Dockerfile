@@ -1,7 +1,7 @@
 FROM python:3.8.5
 WORKDIR /app
-COPY requirements.txt ./requirements.txt
-RUN pip3 install -r requirements.txt
+COPY requirements-train.txt ./requirements-train.txt
+RUN pip3 install -r requirements-train.txt
 COPY . .
 ARG MLFLOW_TRACKING_URI
 ENV MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
