@@ -44,6 +44,8 @@ jobs:
         id: experimentid-setter
         run: |
           python print_experiment_id_for_actions.py
+        env:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
       - name: Fetch runs
         uses: alejio/mlflow-tracking-action@v1.1.0

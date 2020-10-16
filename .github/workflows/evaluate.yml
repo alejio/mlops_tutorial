@@ -31,7 +31,7 @@ jobs:
       - name: Add evaluation-started label
         uses: actions-ecosystem/action-add-labels@v1.1.0
         with:
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "evaluation-started"
 
       - name: Create training job kick off comment
