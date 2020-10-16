@@ -34,7 +34,7 @@ jobs:
           github_token: ${{ secrets.github_token }}
           labels: "evaluation-started"
 
-      - name: Create Comment
+      - name: Create training job kick off comment
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
           issue-number: ${{ steps.get-pr-number.outputs.result }}
@@ -42,7 +42,7 @@ jobs:
             I'm kicking off a training job tracked with the [MLflow remote server](${{ secrets.MLFLOW_TRACKING_URI }}).
       
         # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
-      - name: clone branch of PR
+      - name: Clone branch of PR
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/checkout@v2.3.2
         with:
@@ -52,14 +52,14 @@ jobs:
       - name: Run train job
         run: |
           docker build --build-arg MLFLOW_TRACKING_URI -f train.Dockerfile -t mlops_tutorial_train .
-          docker run -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -it mlops_tutorial_train
+          docker run -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY mlops_tutorial_train
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           MLFLOW_TRACKING_URI : ${{ secrets.MLFLOW_TRACKING_URI }}
         id: trainjob
 
-      - name: Fetch runs
+      - name: Fetch live and production candidate MLflow runs
         uses: alejio/mlflow-tracking-action@v1.1.0
         id: fetch-runs
         with:
@@ -69,7 +69,7 @@ jobs:
           CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
 
       # Let the bot respond
-      - name: Create or Update Comment
+      - name: Create comment reporting results as a markdown table
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
           issue-number: ${{ steps.get-pr-number.outputs.result }}
