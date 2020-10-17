@@ -84,10 +84,9 @@ jobs:
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
-      # TODO: fix this
-      - name: Query deployed model 
+      - name: Query deployed model
         run: |
-            echo "::set-env name=CURRENTLY_DEPLOYED_MODEL::`python fetch_currently_deployed_model.py`"
+            echo "CURRENTLY_DEPLOYED_MODEL=`python fetch_currently_deployed_model.py`" >> GITHUB_ENV
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
