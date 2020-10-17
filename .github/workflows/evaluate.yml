@@ -82,6 +82,11 @@ jobs:
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
+      - name: print output
+        run: |
+          echo ${{ steps.env-var-setter.outputs.EXPERIMENT_NAME }}
+          echo ${{ steps.env-var-setter.outputs.BUCKET_NAME }}
+
       # Let the bot respond
       - name: Create comment reporting results as a markdown table
         uses: peter-evans/create-or-update-comment@v1.4.2
