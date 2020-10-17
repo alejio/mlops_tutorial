@@ -20,7 +20,7 @@ def train_and_persist(data_dict: Dict) -> Dict:
     # Model config
     feature_engineering_params = {"binary": True}
     feature_engineering = CountVectorizer(**feature_engineering_params)
-    classifier_params = {"alpha": 0.75, "binarize": 0.0}
+    classifier_params = {"alpha": 0.8, "binarize": 0.0}
     classifier = BernoulliNB(**classifier_params)
 
     # Model training
@@ -110,6 +110,10 @@ def main(artifact_location: str, production_ready: bool = False) -> None:
             else:
                 mlflow.set_tag(Config.LIVE_TAG, 0)
                 mlflow.set_tag(Config.CANDIDATE_TAG, 1)
+
+            # When running in Github actions set EXPERIMENT_ID as env
+            # for consumption by the subsequent step
+            print(f"::set-output name=EXPERIMENT_ID::{Config.EXPERIMENT_ID}")
 
             # When running in Github actions set EXPERIMENT_ID as env
             # for consumption by the subsequent step
