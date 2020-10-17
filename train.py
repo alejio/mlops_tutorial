@@ -60,7 +60,7 @@ def train_and_persist(data_dict: Dict) -> Dict:
     }
 
 
-def train(artifact_location: str, production_ready: bool = False) -> None:
+def main(artifact_location: str, production_ready: bool = False) -> None:
 
     art_loc = ArtifactLocation(artifact_location)
     data_dict = load_and_preprocess_data(art_loc)
@@ -117,4 +117,4 @@ def train(artifact_location: str, production_ready: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    typer.run(train)
+    typer.run(main)

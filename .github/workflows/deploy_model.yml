@@ -79,15 +79,19 @@ jobs:
       
       - name: Overwrite MLFlow run tags
         run: |
-          python -m pip install --upgrade pip
           pip install -r requirements-cli.txt
           python overwrite_tags.py ${{ steps.fetch-runs.outputs.BASELINE_RUNID }} ${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}
+        env:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
+      # TODO: fix this
       - name: Query deployed model 
         run: |
             echo "::set-env name=CURRENTLY_DEPLOYED_MODEL::`python fetch_currently_deployed_model.py`"
+        env:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
-      - name: Final Comment
+      - name: Final comment
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
             issue-number: ${{ steps.get-pr-number.outputs.result }}
