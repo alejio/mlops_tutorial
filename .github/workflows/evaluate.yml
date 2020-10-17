@@ -68,15 +68,30 @@ jobs:
           BASELINE_RUN_QUERY: "tags.live='1'"
           CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
 
+      - name: Set up Python v3.8.5
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.5'
+
+      - name: Set outputs
+        id: env-var-setter
+        run: |
+          pip install -r requirements-cli.txt
+          echo "::set-output name=EXPERIMENT_ID::`python set_env_variable_in_actions.py EXPERIMENT_ID`"
+          echo "::set-output name=EXPERIMENT_ID::`python set_env_variable_in_actions.py EXPERIMENT_ID`"
+          echo "::set-output name=EXPERIMENT_ID::`python set_env_variable_in_actions.py EXPERIMENT_ID`"
+        env:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
+
       # Let the bot respond
       - name: Create comment reporting results as a markdown table
         uses: peter-evans/create-or-update-comment@v1.4.2
         with:
           issue-number: ${{ steps.get-pr-number.outputs.result }}
           body: |
-            |Model       |MLflow Run ID                                                                                                                                                                                          |S3 Artifact URI                                        |Training Accuracy                                        |Test Accuracy                                           |
-            |------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|---------------------------------------------------------|--------------------------------------------------------|
-            |_Baseline_  |[${{ steps.fetch-runs.outputs.BASELINE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ steps.fetch-runs.outputs.EXPERIMENT_ID }}/runs/${{ steps.fetch-runs.outputs.BASELINE_RUNID }})   |${{ steps.fetch-runs.outputs.BASELINE_ARTIFACT_URI }}  |${{ steps.fetch-runs.outputs.BASELINE_TRAIN_ACCURACY }}  |${{ steps.fetch-runs.outputs.BASELINE_TEST_ACCURACY }}  |
-            |_Candidate_ |[${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ steps.fetch-runs.outputs.EXPERIMENT_ID }}/runs/${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}) |${{ steps.fetch-runs.outputs.CANDIDATE_ARTIFACT_URI }} |${{ steps.fetch-runs.outputs.CANDIDATE_TRAIN_ACCURACY }} |${{ steps.fetch-runs.outputs.CANDIDATE_TEST_ACCURACY }} |
+            |Model       |MLflow Run ID                                                                                                                                                                                          |S3 Artifact URI                                                                                                                                                                                                                                                                                     |Training Accuracy                                        |Test Accuracy                                           |
+            |------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|--------------------------------------------------------|
+            |_Baseline_  |[${{ steps.fetch-runs.outputs.BASELINE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ steps.fetch-runs.outputs.EXPERIMENT_ID }}/runs/${{ steps.fetch-runs.outputs.BASELINE_RUNID }})   |[${{ steps.fetch-runs.outputs.BASELINE_ARTIFACT_URI }}](https://s3.console.aws.amazon.com/s3/buckets/${{ steps.env-var-setter.outputs.BUCKET_NAME }}/${{ steps.env-var-setter.outputs.EXPERIMENT_NAME }}/${{ steps.fetch-runs.outputs.BASELINE_RUNID }}/artifacts/?region=eu-west-2&tab=overview)   |${{ steps.fetch-runs.outputs.BASELINE_TRAIN_ACCURACY }}  |${{ steps.fetch-runs.outputs.BASELINE_TEST_ACCURACY }}  |
+            |_Candidate_ |[${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ steps.fetch-runs.outputs.EXPERIMENT_ID }}/runs/${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}) |[${{ steps.fetch-runs.outputs.CANDIDATE_ARTIFACT_URI }}](https://s3.console.aws.amazon.com/s3/buckets/${{ steps.env-var-setter.outputs.BUCKET_NAME }}/${{ steps.env-var-setter.outputs.EXPERIMENT_NAME }}/${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}/artifacts/?region=eu-west-2&tab=overview) |${{ steps.fetch-runs.outputs.CANDIDATE_TRAIN_ACCURACY }} |${{ steps.fetch-runs.outputs.CANDIDATE_TEST_ACCURACY }} |
             
             #### Results queried from [MLflow Tracking Server](${{ secrets.MLFLOW_TRACKING_URI }}).
