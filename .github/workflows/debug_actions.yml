@@ -25,6 +25,8 @@ jobs:
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
+      - run: echo ${{ steps.env-var-setter.output.EXPERIMENT_ID }}
+
       - name: Fetch runs
         uses: alejio/mlflow-tracking-action@v1.1.0
         id: fetch-runs
