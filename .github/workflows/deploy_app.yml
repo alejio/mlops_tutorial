@@ -16,7 +16,7 @@ jobs:
                 heroku_email: "ge02040@hotmail.com"
                 usedocker: true
                 docker_build_args: |
-                  TRACKING_URI
+                  MLFLOW_TRACKING_URI
                   AWS_ACCESS_KEY_ID
                   AWS_SECRET_ACCESS_KEY
               env:
