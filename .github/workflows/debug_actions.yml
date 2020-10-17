@@ -8,7 +8,6 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set up Python v3.8.5
-        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/setup-python@v2
         with:
           python-version: '3.8.5'
