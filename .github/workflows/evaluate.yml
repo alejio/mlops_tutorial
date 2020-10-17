@@ -88,7 +88,6 @@ jobs:
       # Let the bot respond
       - name: Create comment reporting results as a markdown table
         uses: peter-evans/create-or-update-comment@v1.4.2
-        if: job.steps.env-var-setter.status == success()
         with:
           issue-number: ${{ steps.get-pr-number.outputs.result }}
           body: |
