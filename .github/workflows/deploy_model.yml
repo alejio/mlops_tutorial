@@ -44,7 +44,7 @@ jobs:
         id: env-var-setter
         run: |
           pip install -r requirements-cli.txt
-          echo "EXPERIMENT_ID=`python set_env_variable_in_actions.py EXPERIMENT_ID`" >> $GITHUB_ENV
+          echo "set-output name=EXPERIMENT_ID::`python set_env_variable_in_actions.py EXPERIMENT_ID`"
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
@@ -53,7 +53,7 @@ jobs:
         id: fetch-runs
         with:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-          EXPERIMENT_ID: $EXPERIMENT_ID
+          EXPERIMENT_ID: ${{ steps.env-var-setter.output.EXPERIMENT_ID}}
           BASELINE_RUN_QUERY: "tags.live='1'"
           CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
 
@@ -86,7 +86,7 @@ jobs:
 
       - name: Query deployed model
         run: |
-            echo "CURRENTLY_DEPLOYED_MODEL=`python fetch_currently_deployed_model.py`" >> $GITHUB_ENV
+            echo "set-output name=CURRENTLY_DEPLOYED_MODEL::`python fetch_currently_deployed_model.py`"
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
