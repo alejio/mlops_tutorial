@@ -44,7 +44,7 @@ jobs:
         id: env-var-setter
         run: |
           pip install -r requirements-cli.txt
-          echo "set-output name=EXPERIMENT_ID::`python set_env_variable_in_actions.py EXPERIMENT_ID`"
+          echo "::set-output name=EXPERIMENT_ID::`python set_env_variable_in_actions.py EXPERIMENT_ID`"
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
@@ -85,8 +85,9 @@ jobs:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
       - name: Query deployed model
+        id: query-model
         run: |
-            echo "set-output name=CURRENTLY_DEPLOYED_MODEL::`python fetch_currently_deployed_model.py`"
+            echo "::set-output name=CURRENTLY_DEPLOYED_MODEL::`python fetch_currently_deployed_model.py`"
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
@@ -95,7 +96,7 @@ jobs:
         with:
             issue-number: ${{ steps.get-pr-number.outputs.result }}
             body: |
-                Candidate model deployed to prod! Run ID in production is [$CURRENTLY_DEPLOYED_MODEL](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ steps.fetch-runs.outputs.EXPERIMENT_ID }}/runs/$CURRENTLY_DEPLOYED_MODEL).
+                Candidate model deployed to prod! Run ID in production is [${{ steps.query-model.outputs.CURRENTLY_DEPLOYED_MODEL }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ steps.fetch-runs.outputs.EXPERIMENT_ID }}/runs/${{ steps.query-model.outputs.CURRENTLY_DEPLOYED_MODEL }}).
         env:
           CURRENTLY_DEPLOYED_MODEL: ${{ env.CURRENTLY_DEPLOYED_MODEL }}
 
