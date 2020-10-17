@@ -68,9 +68,17 @@ jobs:
           BASELINE_RUN_QUERY: "tags.live='1'"
           CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
 
+      # Set up Python
+      - name: Set up Python v3.8.5
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.5'
+
       - name: Set env variables for downstreams steps
         id: env-var-setter
         run: |
+          pip install -r requirements-cli.txt
           echo "EXPERIMENT_NAME=`python set_env_variable_in_actions.py EXPERIMENT_NAME`" >> $GITHUB_ENV
           echo "BUCKET_NAME=`python set_env_variable_in_actions.py BUCKET_NAME`" >> $GITHUB_ENV
         env:
@@ -80,6 +88,7 @@ jobs:
       # Let the bot respond
       - name: Create comment reporting results as a markdown table
         uses: peter-evans/create-or-update-comment@v1.4.2
+        if: job.steps.env-var-setter.status == success()
         with:
           issue-number: ${{ steps.get-pr-number.outputs.result }}
           body: |

@@ -43,6 +43,7 @@ jobs:
       - name: Set experiment_id
         id: env-var-setter
         run: |
+          pip install -r requirements-cli.txt
           echo "EXPERIMENT_ID=`python set_env_variable_in_actions.py EXPERIMENT_ID`" >> $GITHUB_ENV
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
@@ -79,7 +80,6 @@ jobs:
       
       - name: Overwrite MLFlow run tags
         run: |
-          pip install -r requirements-cli.txt
           python overwrite_tags.py ${{ steps.fetch-runs.outputs.BASELINE_RUNID }} ${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
