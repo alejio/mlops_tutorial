@@ -23,3 +23,14 @@ jobs:
       - name: print output
         run: |
           echo ${{ steps.env-var-setter.outputs.EXPERIMENT_ID }}
+
+      - name: Fetch runs
+        uses: alejio/mlflow-tracking-action@v1.1.0
+        id: fetch-runs
+        with:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+          EXPERIMENT_ID: '4'
+          BASELINE_RUN_QUERY: "tags.live='1'"
+          CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
+
+      - run: echo ${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}
