@@ -40,10 +40,12 @@ jobs:
         with:
           python-version: '3.8.5'
 
+      - name: Install requirements
+        run: pip install -r requirements-cli.txt
+
       - name: Set experiment_id
         id: env-var-setter
         run: |
-          pip install -r requirements-cli.txt
           echo "::set-output name=EXPERIMENT_ID::`python set_env_variable_in_actions.py EXPERIMENT_ID`"
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
