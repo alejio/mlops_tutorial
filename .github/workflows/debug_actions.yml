@@ -5,32 +5,32 @@ jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
+      - name: clone branch of PR
+        uses: actions/checkout@v2.3.2
 
+      # Set up Python
       - name: Set up Python v3.8.5
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/setup-python@v2
         with:
           python-version: '3.8.5'
 
+      - name: Install requirements
+        run: pip install -r requirements-cli.txt
+
       - name: Set experiment_id
         id: env-var-setter
         run: |
-          pip install -r requirements-cli.txt
           echo "::set-output name=EXPERIMENT_ID::`python set_env_variable_in_actions.py EXPERIMENT_ID`"
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
-
-      - name: print output
-        run: |
-          echo ${{ steps.env-var-setter.outputs.EXPERIMENT_ID }}
 
       - name: Fetch runs
         uses: alejio/mlflow-tracking-action@v1.1.0
         id: fetch-runs
         with:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-          EXPERIMENT_ID: ${{ steps.env-var-setter.outputs.EXPERIMENT_ID }}
+          EXPERIMENT_ID: ${{ steps.env-var-setter.output.EXPERIMENT_ID }}
           BASELINE_RUN_QUERY: "tags.live='1'"
           CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
-
-      - run: echo ${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}
