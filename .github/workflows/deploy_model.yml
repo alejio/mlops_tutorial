@@ -43,7 +43,7 @@ jobs:
       - name: Set experiment_id
         id: env-var-setter
         run: |
-          echo "EXPERIMENT_ID=`python set_env_variable_in_actions.py EXPERIMENT_ID`" >> GITHUB_ENV
+          echo "EXPERIMENT_ID=`python set_env_variable_in_actions.py EXPERIMENT_ID`" >> $GITHUB_ENV
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
@@ -52,7 +52,7 @@ jobs:
         id: fetch-runs
         with:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-          EXPERIMENT_ID: ${{ steps.experimentid-setter.outputs.EXPERIMENT_ID}}
+          EXPERIMENT_ID: $EXPERIMENT_ID
           BASELINE_RUN_QUERY: "tags.live='1'"
           CANDIDATE_RUN_QUERY: "tags.production_candidate='1'"
 
@@ -86,7 +86,7 @@ jobs:
 
       - name: Query deployed model
         run: |
-            echo "CURRENTLY_DEPLOYED_MODEL=`python fetch_currently_deployed_model.py`" >> GITHUB_ENV
+            echo "CURRENTLY_DEPLOYED_MODEL=`python fetch_currently_deployed_model.py`" >> $GITHUB_ENV
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
@@ -95,10 +95,10 @@ jobs:
         with:
             issue-number: ${{ steps.get-pr-number.outputs.result }}
             body: |
-                Candidate model deployed to prod! Run ID in production is [${{ env.CURRENTLY_DEPLOYED_MODEL }}](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ steps.fetch-runs.outputs.EXPERIMENT_ID }}/runs/${{ env.CURRENTLY_DEPLOYED_MODEL }}).
+                Candidate model deployed to prod! Run ID in production is [$CURRENTLY_DEPLOYED_MODEL](${{ secrets.MLFLOW_TRACKING_URI }}/#/experiments/${{ steps.fetch-runs.outputs.EXPERIMENT_ID }}/runs/$CURRENTLY_DEPLOYED_MODEL).
 
       - name: Add deployed label
         uses: actions-ecosystem/action-add-labels@v1.1.0
         with:
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "deployed"
