@@ -43,9 +43,7 @@ jobs:
       - name: Set experiment_id
         id: env-var-setter
         run: |
-          python set_env_variable_in_actions.py EXPERIMENT_NAME
-          python set_env_variable_in_actions.py EXPERIMENT_ID
-          python set env_variable_in_actions.py BUCKET_NAME
+          echo "EXPERIMENT_ID=`python set_env_variable_in_actions.py EXPERIMENT_ID`" >> GITHUB_ENV
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
