@@ -17,18 +17,13 @@ In this project we take advantage of basic functionality of state-of-the-art too
 - [AWS S3](https://aws.amazon.com/s3/) for storing the trained ML artifacts used by our application
 - [Github Actions](https://github.com/features/actions) for creating CI/CD workflows that combine everything together and achieving "MLOps"
 
-> TODO: Link to app
-
-### Key learnings
-
-1. Established DevOps practices are not sufficient for ML and Data Science powered applications
-2. Experiment tracking is a central cog to an MLOps workflow. Many solutions exist, but MLflow is a nice starting point
-3. Github Actions provides lots of cool functionality for MLOps
-4. The Machine Learning Engineer role is vital - but don't expect to spend a lot of time doing model training
 
 ## Initial setup
 
-- [x] Clone: `git clone git@github.com:alejio/mlops_tutorial.git`
+- [x] Fork this repo
+- [x] Clone your forked repo: `git clone git@github.com:<your-gh-name>/mlops_tutorial`
+
+Optionally:
 
 - [x] Create virtual environment: `conda create --name mlops_tutorial python=3.8.5`
 
@@ -46,19 +41,34 @@ For the purposes of this tutorial we will use a very simple application that use
 
 The application itself is a slightly modified version of the `galleries/sentiment_analyzer` example Streamlit app found here awesome-streamlit](https://github.com/MarcSkovMadsen/awesome-streamlit).
 
+> Checkout the app https://polar-oasis-38285.herokuapp.com/
+
+### Milestone 0: Run the app locally
+
+1. Set `ENV ARTIFACT_LOCATION='local'` in `Dockerfile` 
+2. Build Docker container: `docker build -f Dockerfile -t mlops_tutorial .`
+3. Run Docker container: `docker run -e PORT=8501 -it mlops_tutorial`
+4. Open link in browser!
+
+Optionally, you can also run local model training
+1. Set `ENV ARTIFACT_LOCATION='local'` in `train.Dockerfile`
+2. Build Docker container: `docker build -f train.Dockerfile -t mlops_tutorial_train .`
+3. Run Docker container: `docker run -it mlops_tutorial_train`
+
 ### Milestone 1: Deploy app to heroku
 
 [See original instructions](https://devcenter.heroku.com/articles/container-registry-and-runtime)
 
 Steps:
 
-0. [Install heroku cli](https://devcenter.heroku.com/articles/heroku-cli)
-1. Log in to cli: `heroku login -i`
-2. Log in to Container Registry: `heroku container:login`
-3. Create app: `heroku-create`. Take a note of the name of the created app!
-4. Build image and push to Container Registry: `heroku container: push web`
-5. Release image to app: `heroku container: release web`
-6. See app in browser: `heroku open`
+1. [Make sure you installed heroku cli and have a heroku account](https://devcenter.heroku.com/articles/heroku-cli)
+2. Log in to cli: `heroku login -i`
+3. Log in to Container Registry: `heroku container:login`
+4. Create app: `heroku-create`. Take a note of the name of the created app!
+5. Create Github Secrets (to be used later): `HEROKU_API_KEY` (get from [here](https://dashboard.heroku.com/account) )
+6. Build image and push to Container Registry: `heroku container: push web`
+7. Release image to app: `heroku container: release web`
+8. See app in browser: `heroku open`
 
 ## AlmostOps: Start getting more serious
 
@@ -79,7 +89,7 @@ This enables continuous deployment for the app with Github Actions, triggered on
 - Rename `deploy_app.disabled` to `deploy_app.yml` in `.github/workflows/`
 - Commit and push!
 
-## MLOps-ready
+## MLOps
 
 In the final section, we enable model training through a CI/CD Github Actions flow, and use an MLflow Tracking server deployed on an EC2 instance to record all information relating to trained ML models.
 
