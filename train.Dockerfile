@@ -6,9 +6,10 @@ COPY . .
 ARG MLFLOW_TRACKING_URI
 ENV MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
 ENV ARTIFACT_LOCATION='s3_mlflow'
+ENV PRODUCTION_READY='--no-production-ready'
 # Need to provide build arg to set env variable from host env variable:
 # https://vsupalov.com/docker-build-pass-environment-variables/
-CMD python train.py $ARTIFACT_LOCATION 
+CMD python train.py $ARTIFACT_LOCATION $PRODUCTION_READY
 
 # docker build --build-arg MLFLOW_TRACKING_URI -f train.Dockerfile -t mlops_tutorial_train .
 

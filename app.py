@@ -37,7 +37,8 @@ def app(artifact_location: str) -> None:
         text_to_print = "**0Ops**: Using local artifacts."
     elif art_loc == ArtifactLocation.S3:
         text_to_print = (
-            "**AlmostOps**: Using artifacts downloaded from hardcoded S3 location."
+            f"**AlmostOps**: Using artifacts downloaded from hardcoded S3 location: "
+            f"*https://s3.console.aws.amazon.com/s3/buckets/{Config.BUCKET_NAME}/{Config.S3_ARTIFACTS_DIR}/*."
         )
     elif art_loc == ArtifactLocation.S3_MLFLOW:
         text_to_print = "**MLOps**: Using artifacts downloaded from S3 with MLflow Tracking. Fancy stuff!"
