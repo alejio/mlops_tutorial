@@ -47,7 +47,7 @@ In this section we will
 
 For the purposes of this tutorial we will use a very simple application that uses an ML model to predict the sentiment of a user-provided movie review.
 
-The application itself is a slightly modified version of the `galleries/sentiment_analyzer` example Streamlit app found here awesome-streamlit](https://github.com/MarcSkovMadsen/awesome-streamlit).
+The application itself is a slightly modified version of the `galleries/sentiment_analyzer` example Streamlit app found here [awesome-streamlit](https://github.com/MarcSkovMadsen/awesome-streamlit).
 
 
 ### Milestone 1: Deploy our app to heroku
@@ -102,7 +102,7 @@ The two changes are:
     - Run training container: `docker run -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -it mlops_tutorial_train`
     - Alternatively, do: `python train.py s3`
 2. Instruct app to load artefacts from S3, rather than the local environment
-    - In `Dockerfile` set `ARTIFACT_LOCATION=`s3`
+    - In `Dockerfile` set `ARTIFACT_LOCATION=s3`
     
 
 ### Milestone 3: Enable Continuous Deployment with Github Actions
@@ -131,9 +131,9 @@ In the final section, we
 Here, we will leverage simple "decorations" in the application and training jobs to achieve MLflow instrumentation.
 
 1. Configure application to communicate with MLflow server
-    - Add to .env file a new variable: `MLFLOW_TRACKING_URI=http://testuser:<password I give you on Discord>@ec2-18-134-150-82.eu-west-2.compute.amazonaws.com/`
+    - Add to .env file a new variable: `MLFLOW_TRACKING_URI=http://testuser:test@ec2-18-134-150-82.eu-west-2.compute.amazonaws.com/`
     - Run `source .env` in terminal
-    - Also, add this variable as a secret in Github (repo/settings/secrets) 
+    - Also, add `MLFLOW_TRACKING_URI` as a secret in Github (repo/settings/secrets) 
     - Run `mlflow_setup.py`, note your experiment_id and overwrite the existing value in `config.py`
     - In `Dockerfile` set `ARTIFACT_LOCATION=s3_mlflow`
     - In `train.Dockerfile` set `ARTIFACT_LOCATION=s3_mlflow`
@@ -172,10 +172,6 @@ Now we get to see the workflow in action!!
 - Enter `/deploy-candidate` in the PR chat and wait for more magic to happen
 - Now, merge the PR to redeploy Heroku app
 - Wait for the action to complete and checkout the app!
-
-> TODO: MLOPS_TUTORIAL_TOKEN??
-
-
 
 ## Appendix
 
