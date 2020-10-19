@@ -4,15 +4,20 @@ import os
 
 
 class Config:
-    EXPERIMENT_ID = "4"
-    EXPERIMENT_NAME = "predict_sentiment_v4"
-    TRACKING_URI = os.environ["MLFLOW_TRACKING_URI"]  # Set as environment variable
+    # Your config! Go ahead and edit with your own values.
+
+    USER = "alejio"  # UPDATE THIS WITH YOUR GITHUB HANDLE IN THE AlmostOps STAGE OF THE WORKSHOP
+    EXPERIMENT_ID = "6"  # update with what mlflow_setup.py returns
+
+    # !!Leave the below variables as they are!!
+    EXPERIMENT_NAME = f"{USER}_predict_sentiment"
+    BUCKET_NAME = "workshop-mlflow-artifacts"  # update with your own bucket
+    TRACKING_URI = os.environ.get("MLFLOW_TRACKING_URI")
     LIVE_TAG = "live"
     CANDIDATE_TAG = "production_candidate"
-    BUCKET_NAME = "workshop-mlflow-artifacts"  # Update with your own!
     LOGGING = logging.INFO
     S3_DATA_DIR = "data"
-    S3_ARTIFACTS_DIR = "artifacts"
+    S3_ARTIFACTS_DIR = f"artifacts/{USER}"
     TRAIN_CSV = "train.csv"
     TEST_CSV = "test.csv"
     FEATURE_ENGINEERING_ARTIFACT = "feature_engineering.joblib"

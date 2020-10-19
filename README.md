@@ -22,18 +22,26 @@ In this project we take advantage of basic functionality of state-of-the-art too
 
 - [x] Fork this repo
 - [x] Clone your forked repo: `git clone git@github.com:<your-gh-name>/mlops_tutorial`
-
-Optionally:
-
 - [x] Create virtual environment: `conda create --name mlops_tutorial python=3.8.5`
-
 - [x] Activate virtual environment: `conda activate mlops_tutorial`
-
 - [x] Install all dependencies: `pip install -r requirements.txt`
+
+## Overview
+
+- My app deployed on Heroku: https://polar-oasis-38285.herokuapp.com/
+- The Streamlit app is `app.py`. The app has been dockerised with `Dockerfile`
+- The ML model training script producing artefacts is `train.py`. It has also been dockerised with `train.Dockerfile`
+- The `ARTIFACT_LOCATION` parameter in both app and training Dockerfiles controls the various stages of the workshop:
+    - 0Ops stage: `ARTIFACT_LOCATION='local`
+    - AlmostOps stage: `ARTIFACT_LOCATION='s3'`
+    - MLOps stage: `ARTIFACT_LOCATION='s3_mlflow`
+ - S3 bucket: https://s3.console.aws.amazon.com/s3/buckets/workshop-mlflow-artifacts/?region=eu-west-2&tab=overview
+ - MLflow server: http://ec2-18-134-150-82.eu-west-2.compute.amazonaws.com/
 
 ## 0Ops
 
-In this section we will deploy the ML-powered application to the world without "Ops" of any kind.
+In this section we will 
+- Deploy the ML-powered application to the world without "Ops" of any kind.
 
 ### Note: Streamlit app
 
@@ -41,61 +49,137 @@ For the purposes of this tutorial we will use a very simple application that use
 
 The application itself is a slightly modified version of the `galleries/sentiment_analyzer` example Streamlit app found here awesome-streamlit](https://github.com/MarcSkovMadsen/awesome-streamlit).
 
-> Checkout the app https://polar-oasis-38285.herokuapp.com/
 
-### Milestone 0: Run the app locally
+### Milestone 1: Deploy our app to heroku
 
-1. Set `ENV ARTIFACT_LOCATION='local'` in `Dockerfile` 
-2. Build Docker container: `docker build -f Dockerfile -t mlops_tutorial .`
-3. Run Docker container: `docker run -e PORT=8501 -it mlops_tutorial`
-4. Open link in browser!
+[Make sure you have a Heroku account and installed cli](https://devcenter.heroku.com/articles/heroku-cli).
 
-Optionally, you can also run local model training
-1. Set `ENV ARTIFACT_LOCATION='local'` in `train.Dockerfile`
-2. Build Docker container: `docker build -f train.Dockerfile -t mlops_tutorial_train .`
-3. Run Docker container: `docker run -it mlops_tutorial_train`
+First, we will specify to the app we are running in *0Ops* mode:
+ - Set `ENV ARTIFACT_LOCATION='local'` in `Dockerfile` and `train.Dockerfile`
 
-### Milestone 1: Deploy app to heroku
+Secondly, we will use heroku cli to [build and deploy the application Docker container to Heroku](https://devcenter.heroku.com/articles/container-registry-and-runtime)
+), and to the world!
 
-[See original instructions](https://devcenter.heroku.com/articles/container-registry-and-runtime)
+- Steps:
 
-Steps:
-
-1. [Make sure you installed heroku cli and have a heroku account](https://devcenter.heroku.com/articles/heroku-cli)
-2. Log in to cli: `heroku login -i`
-3. Log in to Container Registry: `heroku container:login`
-4. Create app: `heroku-create`. Take a note of the name of the created app!
-5. Create Github Secrets (to be used later): `HEROKU_API_KEY` (get from [here](https://dashboard.heroku.com/account) )
-6. Build image and push to Container Registry: `heroku container: push web`
-7. Release image to app: `heroku container: release web`
-8. See app in browser: `heroku open`
+1. Log in to cli: `heroku login -i`
+2. Log in to Container Registry: `heroku container:login`
+3. Create app: `heroku create`. Take a note of the name of the created app!
+4. Add secrets to your Github repo (repo/settings/secrets). We will need this later.
+- `HEROKU_APP_NAME` (the output of step 3: e.g. polar-oasis-12478)
+- `HEROKU_API_KEY` (get from [here](https://dashboard.heroku.com/account))
+6. Build container and push to Heroku Container Registry: `heroku container:push web`
+7. Release uploaded container to app: `heroku container:release web`
+8. See public app in browser: `heroku open`
 
 ## AlmostOps: Start getting more serious
 
-In this section, we will enable loading of artifacts from S3, and enable Continuous Deployment of the application, using a Github Action triggered upon any push to master.
+In this section, we will 
+- Enable loading of artifacts from S3
+- Enable Continuous Deployment of the application, using a Github Action triggered upon any push to master.
 
+For the purposes of the workshop we will use my S3 bucket, in order to mitigate issues with setting up.
+
+Some setup first!
+
+You need permissions to read and write to the workshop S3 bucket:
+- Create a file named `.env`
+- Add the following lines:
+    - `export AWS_ACCESS_KEY_ID=<the key I send you on Discord`
+    - `export AWS_SECRET_ACCESS_KEY=<the key I send you on Discord>`
+    - Run `source .env` in your terminal
+- Also, add the above AWS credentials as secrets in Github (repo/settings/secrets), which we will need later. 
+ 
 ### Milestone 2: Load artifacts from S3
 
-- Create a public S3 bucket and a directory `data`
-- Update the S3 bucket name in config.py
-- Dump `train.csv` and `test.csv` under `data`
-- Add AWS creds to secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
+In this stage, we will instruct the app to load artefacts from S3, rather than its local environment.
 
-### Milestone 3: Enable CD with Github Actions
+The two changes are: 
+1. Make training script write artefacts to dedicated subdirectory for each participant in the workshop's [S3 bucket](https://s3.console.aws.amazon.com/s3/buckets/workshop-mlflow-artifacts/?region=eu-west-2&tab=overview). 
+    - In `config.py` set the `Config` class attribute `USER` to something unique; e.g. your Github handle
+    - In `train.Dockerfile` set `ARTIFACT_LOCATION='s3`
+    - Build training container: `docker build -f train.Dockerfile -t mlops_tutorial_train .`
+    - Run training container: `docker run -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -it mlops_tutorial_train`
+    - Alternatively, do: `python train.py s3`
+2. Instruct app to load artefacts from S3, rather than the local environment
+    - In `Dockerfile` set `ARTIFACT_LOCATION=`s3`
+    
+
+### Milestone 3: Enable Continuous Deployment with Github Actions
 
 This enables continuous deployment for the app with Github Actions, triggered on master branch push.
 
-- Create secrets: `HEROKU_API_KEY` and `HEROKU_APP_NAME`
 - Rename `deploy_app.disabled` to `deploy_app.yml` in `.github/workflows/`
-- Commit and push!
+- Commit all your changes to git and push to master
+    - `git add .`
+    - `git commit -m 'Milestone 3'`
+    - `git push`
+
+The Github Action knows to deploy the right Heroku app, because of the secrets we added to Github `HEROKU_APP_NAME` and `HEROKU_API_KEY` earlier.
+
+Now, the app will be automatically redeployed whenever you modify the master branch!
 
 ## MLOps
 
-In the final section, we enable model training through a CI/CD Github Actions flow, and use an MLflow Tracking server deployed on an EC2 instance to record all information relating to trained ML models.
+In the final section, we 
+- Introduce experiment tracking with MLflow Tracking server, deployed on an EC2 instance
+- Enable model training to take place automatically within a CI/CD Github Actions flow, rather than manually 
+- Finally, we use Github Actions to create a cool pull request workflow for updating the models!
 
-Finally, we use Github Actions to create a better pull request workflow for updating trained models.
+### Milestone 4: Instrument application with MLflow
 
-### Milestone 4: Set up MLflow
+Here, we will leverage simple "decorations" in the application and training jobs to achieve MLflow instrumentation.
+
+1. Configure application to communicate with MLflow server
+    - Add to .env file a new variable: `MLFLOW_TRACKING_URI=http://testuser:<password I give you on Discord>@ec2-18-134-150-82.eu-west-2.compute.amazonaws.com/`
+    - Run `source .env` in terminal
+    - Also, add this variable as a secret in Github (repo/settings/secrets) 
+    - Run `mlflow_setup.py`, note your experiment_id and overwrite the existing value in `config.py`
+    - In `Dockerfile` set `ARTIFACT_LOCATION=s3_mlflow`
+    - In `train.Dockerfile` set `ARTIFACT_LOCATION=s3_mlflow`
+
+2. Run a training job to register your model with MLflow:
+    - `python train.py s3_mlflow --production-ready` TODO: dockerise
+    - Go to the [MLflow server](http://ec2-18-134-150-82.eu-west-2.compute.amazonaws.com/) and be excited!
+
+3. Commit and push to master, wait for the automated deployment and check out app!
+    - `git add.`
+    - `git commit -m "Milestone 4"`
+    - `git push`
+
+### Milestone 5: Enable `evaluate` Github Action
+
+This Github Action has been set to be triggered from a PR comment, but we could also have chosen it to be triggered by push to master.
+
+We will see it in action in the next milestone.
+
+For now, all we have to do is to:
+-  Rename `evaluate.disabled` to `evaluate.yml`
+- Commit and push to master:
+    - `git add .`
+    - `git commit -m "Milestone 5`
+    - `git push`
+
+
+### Milestone 6: Embed MLOps to pull requests
+
+Now we get to see the workflow in action!!
+- Create a new branch: `git checkout -b test-ml-pr`
+- Update any model config param in `train.py`; e.g. `alpha=0.9`
+- Open a pull request against this branch
+- Enter `/evaluate` in the PR chat and see magic starting to happen
+- Check out the model results
+- Enter `/deploy-candidate` in the PR chat and wait for more magic to happen
+- Now, merge the PR to redeploy Heroku app
+- Wait for the action to complete and checkout the app!
+
+> TODO: MLOPS_TUTORIAL_TOKEN??
+
+
+
+## Appendix
+
+### Set up MLflow server
 1. Launch EC2 instance
     - Create IAM role EC2 with S3 access
     - Amazon Linux AMI 2018.03.0 (HVM), SSD Volume Type - ami-0765d48d7e15beb93
@@ -126,46 +210,3 @@ Finally, we use Github Actions to create a better pull request workflow for upda
 4. Run MLflow server
     - Start the server: `mlflow server --default-artifact-root s3://<your-s3-bucket> --host 0.0.0.0`
     - Check it out! Open browser and go to your instance.
-
-### Milestone 5: Instrument application with MLflow
-
-1. Configure application to communicate with MLflow server
-    - `export MLFLOW_TRACKING_URI=http://testuser:<your_password>@ec2-<your_instance>`
-    - Run `mlflow_setup.py` and note your experiment_id
-    - Copy your experiment_id to `config.py`
-    - Run an initial experiment to create your first live model: `python train.py s3_mlflow --production-ready`
-    - Check your MLflow server (refresh page) and be excited!
-2. Run the streamlit app with MLflow artefacts locally: `streamlit run app.py s3_mlflow`
-3. Create Github secrets
-    - `MLFLOW_TRACKING_URI`: use format "http://testuser:<your_ec2_password>@ec2-<your_instance>"
-4. In Dockerfile set `ARTIFACT_LOCATION=s3_mlflow`
-5. Push to master, wait for the deployment and check out app.
-
-### Milestone 6: Embed MLOps to pull requests
-
-Some setup first:
-
-1. Create a Github app for enabling a specific Actions step:
-    - Github Settings -> Developer settings -> New Github App
-    - Give it a name and the repo URL
-    - Generate and set a private key 
-    - Set permissions: all repo permissions read-only, except for content references (none), read & write for Deployments, Pull Requests, Workflows. #TODO!
-    - Install app to your account and give access to the repository
-    - Add secrets for Github app: `APP_ID`, `APP_PEM`
-    
-2. Enable Actions
-    - Rename `deploy_app.disabled` to `deploy_app.yml`
-    - Rename `evaluate.disabled` to `evaluate.yml`
-    
-3. See the workflow in action!
-    - Create a new branch: `git checkout -b test-ml-pr`
-    - Update a model config param
-    - Create a PR
-    - Enter `/evaluate` in the PR chat and see magic happening
-    - Enter `/deploy-candidate` in the PR chat and wait for magic to happen
-    - Merge PR to redeploy app
-    - Wait for the action to complete and checkout the app
-
-> TODO: rename master branch to main
-
-> TODO: MLOPS_TUTORIAL_TOKEN??

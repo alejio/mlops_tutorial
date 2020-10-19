@@ -14,7 +14,11 @@ ARG AWS_ACCESS_KEY_ID
 ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
 ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+
+# ARTIFACT_LOCATION can be 'local' (OOps), 's3' (almostOps), 's3_mlflow' (MLOps)
+# Configure accordingly!
 ENV ARTIFACT_LOCATION='s3_mlflow'
+
 # Need to provide build arg to set env variable from host env variable:
 # https://vsupalov.com/docker-build-pass-environment-variables/
 CMD streamlit run app.py $ARTIFACT_LOCATION --server.port $PORT 
