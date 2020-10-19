@@ -25,6 +25,8 @@ In this project we take advantage of basic functionality of state-of-the-art too
 - [x] Create virtual environment: `conda create --name mlops_tutorial python=3.8.5`
 - [x] Activate virtual environment: `conda activate mlops_tutorial`
 - [x] Install all dependencies: `pip install -r requirements.txt`
+- [x] Make sure all files under `.github/workflow` have file extension `.disabled`. if there is a `*.yml`, rename it to `*.diabled`
+- [x] Make sure ARTIFACT_LOCATION='local' in `Dockerfile` and `train.Dockerfile`
 
 ## Overview
 

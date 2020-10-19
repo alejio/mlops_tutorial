@@ -40,6 +40,7 @@ def app(artifact_location: str) -> None:
             f"**AlmostOps**: Using artifacts downloaded from hardcoded S3 location: "
             f"*https://s3.console.aws.amazon.com/s3/buckets/{Config.BUCKET_NAME}/{Config.S3_ARTIFACTS_DIR}/*."
         )
+    # TODO: print model version
     elif art_loc == ArtifactLocation.S3_MLFLOW:
         text_to_print = "**MLOps**: Using artifacts downloaded from S3 with MLflow Tracking. Fancy stuff!"
 
