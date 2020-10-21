@@ -1,4 +1,3 @@
-import mlflow
 import logging
 from config import Config
 import typer

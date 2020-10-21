@@ -1,9 +1,0 @@
-mlflow
-pandas
-pre-commit
-typer
-numpy
-scikit-learn
-boto3
-s3fs==0.3.0
-fsspec
