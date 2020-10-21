@@ -1,6 +1,6 @@
 import logging
-from enum import Enum
 import os
+from enum import Enum
 
 
 class Config:

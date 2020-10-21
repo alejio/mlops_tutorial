@@ -1,8 +1,9 @@
 import logging
-from config import Config
-import typer
-from utils import get_mlflow_run
 
+import typer
+
+from config import Config
+from utils import get_mlflow_run
 
 logging.basicConfig(level=Config.LOGGING)
 

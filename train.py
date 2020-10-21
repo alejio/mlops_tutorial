@@ -36,7 +36,7 @@ def train_and_persist(data_dict: Dict) -> Dict:
     y_pred_test = classifier.predict(X_test)
     test_accuracy = accuracy_score(data_dict["y_test"], y_pred_test)
     logging.info(
-        f"Training - Test accuracy: {round(100*train_accuracy, 2)}% - {round(100*test_accuracy, 2)}%"
+        f"Training - Test accuracy: {round(100 * train_accuracy, 2)}% - {round(100 * test_accuracy, 2)}%"
     )
 
     # Persist
@@ -61,7 +61,6 @@ def train_and_persist(data_dict: Dict) -> Dict:
 
 
 def main(artifact_location: str, production_ready: bool = False) -> None:
-
     art_loc = ArtifactLocation(artifact_location)
     data_dict = load_and_preprocess_data(art_loc)
 

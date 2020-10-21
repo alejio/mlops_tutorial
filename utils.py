@@ -55,7 +55,6 @@ def download_artifacts_from_s3(bucket_name: str, s3_path: str, local_path: str) 
 
 
 def load_artifacts(artifact_location: ArtifactLocation) -> Tuple:
-
     if artifact_location != ArtifactLocation.LOCAL:
         if artifact_location == ArtifactLocation.S3:
             s3_path = Config.S3_ARTIFACTS_DIR

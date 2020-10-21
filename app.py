@@ -12,7 +12,6 @@ logging.basicConfig(level=Config.LOGGING)
 
 
 def app(artifact_location: str) -> None:
-
     # Cached function for artifact loading
     @st.cache(allow_output_mutation=True)
     def from_artifacts(artifact_location: str) -> Tuple:

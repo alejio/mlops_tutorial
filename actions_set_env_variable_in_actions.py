@@ -1,5 +1,6 @@
-from config import Config
 import typer
+
+from config import Config
 
 
 def main(config_var: str) -> None:
