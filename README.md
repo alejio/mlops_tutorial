@@ -26,7 +26,7 @@ In this project we take advantage of basic functionality of state-of-the-art too
 - [x] Activate virtual environment: `conda activate mlops_tutorial`
 - [x] Install all dependencies: `pip install -r requirements.txt`
 - [x] Make sure all files under `.github/workflow` have file extension `.disabled`. if there is a `*.yml`, rename it to `*.diabled`
-- [x] Make sure ARTIFACT_LOCATION='local' in `Dockerfile` and `train.Dockerfile`
+- [x] Make sure `ARTIFACT_LOCATION='local'` in `Dockerfile` and `train.Dockerfile`
 
 ## Overview
 
@@ -75,6 +75,25 @@ Secondly, we will use heroku cli to [build and deploy the application Docker con
 6. Release uploaded container to app: `heroku container:release web`
 7. See public app in browser: `heroku open`
 
+**Optional**
+ 
+You may want to run the training script and the application on your machine.
+
+*Training*:
+- Build container: `docker build -f train.Dockerfile -t mlops_tutorial_train .`
+- Run training: `docker run -it mlops_tutorial_train`
+- Or just run with Python: `python train.py local`
+
+*App*:
+- Build container: `docker build -f Dockerfile -t mlops_tutorial .`
+- Run container: `docker run -e PORT=8501 -it mlops_tutorial`
+- Or just run with Python: `streamlit run app.py local`
+
+If you want to run on your machine in the subsequent stages, you need to modify the
+ above commands to include some environment variables as build args.
+
+Se comments at the bottom of Dockerfiles for more info. 
+
 ## AlmostOps: Start getting more serious
 
 In this section, we will 
@@ -101,10 +120,9 @@ The two changes are:
 1. Make training script write artefacts to dedicated subdirectory for each participant in the workshop's [S3 bucket](https://s3.console.aws.amazon.com/s3/buckets/workshop-mlflow-artifacts/?region=eu-west-2&tab=overview). 
     - In `config.py` set the `Config` class attribute `USER` to something unique; e.g. your Github handle
     - In `train.Dockerfile` set `ARTIFACT_LOCATION='s3`
-    TODO: pass creds directly
     - Build training container: `docker build -f train.Dockerfile -t mlops_tutorial_train .`
     - Run training container: `docker run -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -it mlops_tutorial_train`
-    - Alternatively, do: `python train.py s3`
+    - If you have issues setting environment variables, hardcode the credentials as arguments to the run command
 2. Instruct app to load artefacts from S3, rather than the local environment
     - In `Dockerfile` set `ARTIFACT_LOCATION=s3`
     
@@ -140,11 +158,14 @@ Here, we will leverage simple "decorations" in the application and training jobs
     - Run `source .env` in terminal
     - Also, add `MLFLOW_TRACKING_URI` as a secret in Github (repo/settings/secrets) 
     - Run `mlflow_setup.py`, note your experiment_id and overwrite the existing value in `config.py`
-    - In `Dockerfile` set `ARTIFACT_LOCATION=s3_mlflow`
-    - In `train.Dockerfile` set `ARTIFACT_LOCATION=s3_mlflow`
+    - In `Dockerfile` set `ARTIFACT_LOCATION='s3_mlflow'`
+    - In `train.Dockerfile` set `ARTIFACT_LOCATION='s3_mlflow'`
 
 2. Run a training job to register your model with MLflow:
     - `python train.py s3_mlflow --production-ready`
+    - or use Docker: In dockerfile set `ENV PRODUCTION_READY='--production-ready'`
+    - build and run container
+
     - Go to the [MLflow server](http://ec2-18-134-150-82.eu-west-2.compute.amazonaws.com/) and be excited!
 
 3. Commit and push to master, wait for the automated deployment and check out app!
@@ -152,21 +173,21 @@ Here, we will leverage simple "decorations" in the application and training jobs
     - `git commit -m "Milestone 4"`
     - `git push`
 
-### Milestone 5: Enable `evaluate` Github Action
+### Milestone 5: Enable CI/CD Github Actions
 
 This Github Action has been set to be triggered from a PR comment, but we could also have chosen it to be triggered by push to master.
 
 We will see it in action in the next milestone.
 
 For now, all we have to do is to:
--  Rename `evaluate.disabled` to `evaluate.yml`
+- Rename `evaluate.disabled` to `evaluate.yml` and `deploy_app.disabled` to `deploy_app.yml`
 - Commit and push to master:
     - `git add .`
     - `git commit -m "Milestone 5`
     - `git push`
 
 
-### Milestone 6: Embed MLOps to pull requests
+### Milestone 6: Do a pull request!
 
 Now we get to see the workflow in action!!
 - Create a new branch: `git checkout -b test-ml-pr`
