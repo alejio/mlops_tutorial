@@ -6,7 +6,7 @@ import streamlit as st
 import typer
 
 from config import Config, ArtifactLocation
-from utils import load_artifacts
+from utils import load_artifacts, get_mlflow_run
 
 logging.basicConfig(level=Config.LOGGING)
 
@@ -45,9 +45,16 @@ def app(artifact_location: str) -> None:
             f"**AlmostOps**: Using artifacts downloaded from hardcoded S3 location: "
             f"*https://s3.console.aws.amazon.com/s3/buckets/{Config.BUCKET_NAME}/{Config.S3_ARTIFACTS_DIR}/*."
         )
-    # TODO: print model version
+
     elif art_loc == ArtifactLocation.S3_MLFLOW:
-        text_to_print = "**MLOps**: Using artifacts downloaded from S3 with MLflow Tracking. Fancy stuff!"
+        prod_run_id = get_mlflow_run(
+            Config.TRACKING_URI, Config.EXPERIMENT_ID, Config.LIVE_TAG
+        )
+        st.balloons()
+        st.success("You're a star! Using Mlflow in prod!")
+        st.info(f"Model version deployed: {prod_run_id}")
+        text_to_print = f"**MLOps**: Using artifacts specified by MLflow and downloaded from [S3](https://s3.console.aws.amazon.com/s3/buckets/{Config.BUCKET_NAME}/{Config.EXPERIMENT_NAME}/{prod_run_id}/artifacts/)"
+
     st.markdown(text_to_print)
 
     # Load artifacts
