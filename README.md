@@ -163,8 +163,8 @@ Here, we will leverage simple "decorations" in the application and training jobs
 
 2. Run a training job to register your model with MLflow:
     - `python train.py s3_mlflow --production-ready`
-    - or use Docker: In dockerfile set `ENV PRODUCTION_READY='--production-ready'`
-    - build and run container
+    - or use Docker: In train.Dockerfile set `ENV PRODUCTION_READY='--production-ready'`
+    - build and run train.Dockerfile container
 
     - Go to the [MLflow server](http://ec2-18-134-150-82.eu-west-2.compute.amazonaws.com/) and be excited!
 
