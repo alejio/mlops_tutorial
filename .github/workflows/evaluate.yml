@@ -77,8 +77,8 @@ jobs:
 #        id: env-var-setter
 #        run: |
 #          pip install -r requirements-cli.txt
-#          echo "::set-output name=BUCKET_NAME::`python set_env_variable_in_actions.py BUCKET_NAME`"
-#          echo "::set-output name=EXPERIMENT_NAME::`python set_env_variable_in_actions.py EXPERIMENT_NAME`"
+#          echo "::set-output name=BUCKET_NAME::`python actions_cli/set_env_variable_in_actions.py BUCKET_NAME`"
+#          echo "::set-output name=EXPERIMENT_NAME::`python actions_cli/set_env_variable_in_actions.py EXPERIMENT_NAME`"
 #        env:
 #          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 #

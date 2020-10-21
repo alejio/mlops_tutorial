@@ -44,7 +44,7 @@ jobs:
         id: env-var-setter
         run: |
           pip install -r requirements-cli.txt
-          echo "::set-output name=EXPERIMENT_ID::`python set_env_variable_in_actions.py EXPERIMENT_ID`"
+          echo "::set-output name=EXPERIMENT_ID::`python actions_cli/set_env_variable_in_actions.py EXPERIMENT_ID`"
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
@@ -84,14 +84,14 @@ jobs:
       
       - name: Overwrite MLFlow run tags
         run: |
-          python overwrite_tags.py ${{ steps.fetch-runs.outputs.BASELINE_RUNID }} ${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}
+          python actions_cli/overwrite_tags.py ${{ steps.fetch-runs.outputs.BASELINE_RUNID }} ${{ steps.fetch-runs.outputs.CANDIDATE_RUNID }}
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 
       - name: Query deployed model
         id: query-model
         run: |
-            echo "::set-output name=CURRENTLY_DEPLOYED_MODEL::`python fetch_currently_deployed_model.py`"
+            echo "::set-output name=CURRENTLY_DEPLOYED_MODEL::`python actions_cli/fetch_currently_deployed_model.py`"
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI}}
 

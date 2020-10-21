@@ -12,27 +12,32 @@ logging.basicConfig(level=Config.LOGGING)
 
 
 def app(artifact_location: str) -> None:
+
+    # Cached function for artifact loading
     @st.cache(allow_output_mutation=True)
     def from_artifacts(artifact_location: str) -> Tuple:
         art_loc = ArtifactLocation(artifact_location)
         return load_artifacts(art_loc)
 
-    # Here is the "frontend" code
+    ## FRONTEND CODE
 
     st.title("Predicting movie review sentiment")
+
     st.info(
         "Based on an example in [awesome-streamlit](https://github.com/MarcSkovMadsen/awesome-streamlit) "
         "by [Marc Skov Madsen](https://github.com/MarcSkovMadsen), "
         "who took it from [Paras Patidar](https://github.com/patidarparas13/Sentiment-Analyzer-Tool). \n\n"
         "Cheers both!\n\n"
     )
+
     st.write(
         "The algorithm is trained on a collection of movie reviews and you can test it below."
     )
 
     st.subheader("Load model artifacts")
-    art_loc = ArtifactLocation(artifact_location)
 
+    # Print which app "flavour" we are running: 0Ops, AlmostOps, or MLOps
+    art_loc = ArtifactLocation(artifact_location)
     if art_loc == ArtifactLocation.LOCAL:
         text_to_print = "**0Ops**: Using local artifacts."
     elif art_loc == ArtifactLocation.S3:
@@ -43,18 +48,21 @@ def app(artifact_location: str) -> None:
     # TODO: print model version
     elif art_loc == ArtifactLocation.S3_MLFLOW:
         text_to_print = "**MLOps**: Using artifacts downloaded from S3 with MLflow Tracking. Fancy stuff!"
-
     st.markdown(text_to_print)
 
+    # Load artifacts
     with st.spinner("Loading.."):
         feature_engineering, classifier = from_artifacts(artifact_location)
         st.info("Artifacts loaded successfully!")
 
+    # Input section
     st.title("Feed the hungry model with your review!")
     write_here = "Write Here..."
     review = st.text_input(
         "Enter a review for classification by the algorithm", write_here
     )
+
+    # Run predictions
     if st.button("Predict Sentiment"):
         y = feature_engineering.transform([review])
         prediction = classifier.predict(y)

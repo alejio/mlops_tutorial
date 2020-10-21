@@ -68,11 +68,12 @@ Secondly, we will use heroku cli to [build and deploy the application Docker con
 2. Log in to Container Registry: `heroku container:login`
 3. Create app: `heroku create`. Take a note of the name of the created app!
 4. Add secrets to your Github repo (repo/settings/secrets). We will need this later.
-- `HEROKU_APP_NAME` (the output of step 3: e.g. polar-oasis-12478)
-- `HEROKU_API_KEY` (get from [here](https://dashboard.heroku.com/account))
-6. Build container and push to Heroku Container Registry: `heroku container:push web`
-7. Release uploaded container to app: `heroku container:release web`
-8. See public app in browser: `heroku open`
+- `HEROKU_EMAIL`: the email you use on Heroku
+- `HEROKU_APP_NAME`: the output of step 3: e.g. polar-oasis-12478
+- `HEROKU_API_KEY`: get from [here](https://dashboard.heroku.com/account)
+5. Build container and push to Heroku Container Registry. This will take a while!: `heroku container:push web`
+6. Release uploaded container to app: `heroku container:release web`
+7. See public app in browser: `heroku open`
 
 ## AlmostOps: Start getting more serious
 
@@ -87,7 +88,7 @@ Some setup first!
 You need permissions to read and write to the workshop S3 bucket:
 - Create a file named `.env`
 - Add the following lines:
-    - `export AWS_ACCESS_KEY_ID=<the key I send you on Discord`
+    - `export AWS_ACCESS_KEY_ID=<the key I send you on Discord>`
     - `export AWS_SECRET_ACCESS_KEY=<the key I send you on Discord>`
     - Run `source .env` in your terminal
 - Also, add the above AWS credentials as secrets in Github (repo/settings/secrets), which we will need later. 
@@ -100,6 +101,7 @@ The two changes are:
 1. Make training script write artefacts to dedicated subdirectory for each participant in the workshop's [S3 bucket](https://s3.console.aws.amazon.com/s3/buckets/workshop-mlflow-artifacts/?region=eu-west-2&tab=overview). 
     - In `config.py` set the `Config` class attribute `USER` to something unique; e.g. your Github handle
     - In `train.Dockerfile` set `ARTIFACT_LOCATION='s3`
+    TODO: pass creds directly
     - Build training container: `docker build -f train.Dockerfile -t mlops_tutorial_train .`
     - Run training container: `docker run -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -it mlops_tutorial_train`
     - Alternatively, do: `python train.py s3`
@@ -112,6 +114,7 @@ The two changes are:
 This enables continuous deployment for the app with Github Actions, triggered on master branch push.
 
 - Rename `deploy_app.disabled` to `deploy_app.yml` in `.github/workflows/`
+- Change the email field to your own
 - Commit all your changes to git and push to master
     - `git add .`
     - `git commit -m 'Milestone 3'`
@@ -141,7 +144,7 @@ Here, we will leverage simple "decorations" in the application and training jobs
     - In `train.Dockerfile` set `ARTIFACT_LOCATION=s3_mlflow`
 
 2. Run a training job to register your model with MLflow:
-    - `python train.py s3_mlflow --production-ready` TODO: dockerise
+    - `python train.py s3_mlflow --production-ready`
     - Go to the [MLflow server](http://ec2-18-134-150-82.eu-west-2.compute.amazonaws.com/) and be excited!
 
 3. Commit and push to master, wait for the automated deployment and check out app!
