@@ -4,7 +4,7 @@
 
 Application code and supporting material for the [Codemotion 2020 workshop](https://events.codemotion.com/conferences/online/2020/codemotion-online-tech-conference/workshops/) titled "From 0Ops to MLOps" held on 22/10.
 
-The project focusses on incrementally improving the supporting MLOps infrastructure of a simple ML-powered application.
+The project focuses on incrementally improving the supporting MLOps infrastructure of a simple ML-powered application.
 
 Starting from the most basic config (0Ops), we gradually "decorate" the app over a series of **Milestones** with standard CI/CD workflows to arrive at a setup that enables basic ML auditability, reproducibility, and collaboration.
 
