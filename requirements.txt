@@ -1,12 +1,3 @@
-#TODO: should be pinned
-joblib
-streamlit
-boto3
-scikit-learn
-mlflow
-typer
-pandas
+-r requirements-app.txt
+-r requirements-train.txt
 pre-commit
-numpy
-s3fs==0.3.0
-fsspec
