@@ -1,9 +1,5 @@
-.vscode
-.vscode/settings.json
 .ipynb_checkpoints
-.vscode/*
 __pycache__
-.vscode/launch.json
 artifacts_s3/classifier.joblib
 artifacts_s3/feature_engineering.joblib
 mlruns
@@ -12,3 +8,4 @@ feature_engineering.joblib
 *pem
 .idea
 .env
+.vscode
