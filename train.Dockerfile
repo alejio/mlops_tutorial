@@ -5,7 +5,7 @@ RUN pip3 install -r requirements-train.txt
 COPY . .
 ARG MLFLOW_TRACKING_URI
 ENV MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
-ENV ARTIFACT_LOCATION='local'
+ENV ARTIFACT_LOCATION='s3'
 ENV PRODUCTION_READY='--no-production-ready'
 # Need to provide build arg to set env variable from host env variable:
 # https://vsupalov.com/docker-build-pass-environment-variables/

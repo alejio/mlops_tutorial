@@ -17,7 +17,7 @@ ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 
 # ARTIFACT_LOCATION can be 'local' (OOps), 's3' (almostOps), 's3_mlflow' (MLOps)
 # Configure accordingly!
-ENV ARTIFACT_LOCATION='local'
+ENV ARTIFACT_LOCATION='s3'
 
 # Need to provide build arg to set env variable from host env variable:
 # https://vsupalov.com/docker-build-pass-environment-variables/
