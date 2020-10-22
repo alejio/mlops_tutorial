@@ -6,8 +6,8 @@ from enum import Enum
 class Config:
     # Your config! Go ahead and edit with your own values.
 
-    USER = "alejio"  # UPDATE THIS WITH YOUR GITHUB HANDLE IN THE AlmostOps STAGE OF THE WORKSHOP
-    EXPERIMENT_ID = "0"  # update with what mlflow_setup.py returns
+    USER = "random"  # UPDATE THIS WITH YOUR GITHUB HANDLE IN THE AlmostOps STAGE OF THE WORKSHOP
+    EXPERIMENT_ID = "3"  # update with what mlflow_setup.py returns
 
     # !!Leave the below variables as they are!!
     EXPERIMENT_NAME = f"{USER}_predict_sentiment"
