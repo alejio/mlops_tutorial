@@ -20,7 +20,7 @@ def train_and_persist(data_dict: Dict) -> Dict:
     # Model config
     feature_engineering_params = {"binary": True}
     feature_engineering = CountVectorizer(**feature_engineering_params)
-    classifier_params = {"alpha": 0.63, "binarize": 0.0}
+    classifier_params = {"alpha": 0.79, "binarize": 0.0}
     classifier = BernoulliNB(**classifier_params)
 
     # Model training
