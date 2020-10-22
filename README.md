@@ -2,7 +2,7 @@
 
 ## Scope
 
-Application code and supporting material for the [Codemotion 2020 workshop](https://events.codemotion.com/conferences/online/2020/codemotion-online-tech-conference/workshops/) titled "From 0Ops to MLOps" held on 22/10.
+Application code and supporting material for the [Codemotion 2020 workshop](https://events.codemotion.com/conferences/online/2020/codemotion-online-tech-conference/workshops/) titled "From 0Ops to MLOps" ([slides](https://docs.google.com/presentation/d/1-PkE0VuJMVucixz8jzaMS4iVcnyuUMapGFtvS4Ee7uo/edit#slide=id.p1)held on 22/10.
 
 The project focuses on incrementally improving the supporting MLOps infrastructure of a simple ML-powered application.
 
